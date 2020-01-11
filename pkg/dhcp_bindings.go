@@ -3,6 +3,9 @@ package pkg
 //go:generate sh -c "rm -rf dhcp; git clone https://gitlab.isc.org/isc-projects/dhcp.git; cd dhcp; ./configure; make"
 
 /*
+#cgo LDFLAGS: -ldhcp -lomapi -ldhcpctl -lirs -ldns -lisc -lisccfg -Ldhcp/bind/bind-9.11.14/lib/isc -Ldhcp/bind/bind-9.11.14/lib/isccfg -Ldhcp/bind/bind-9.11.14/lib/dns -Ldhcp/bind/bind-9.11.14/lib/irs -Ldhcp/dhcpctl -L dhcp/omapip -Ldhcp/common
+#cgo CFLAGS: -w -Idhcp/includes -Idhcp/includes/omapip -Idhcp/bind/include -Idhcp/bind/bind-9.11.14/lib/isc/include/isc
+
 #include "dhcpd_bindings.h"
 */
 import "C"
