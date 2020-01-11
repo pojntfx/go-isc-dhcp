@@ -3,7 +3,9 @@ package workers
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"syscall"
 )
 
 // DHCPD is a DHCP server.
@@ -14,6 +16,7 @@ type DHCPD struct {
 	Device        string
 	configFileDir string
 	leasesFileDir string
+	instance      *exec.Cmd
 }
 
 // Subnet is a DHCP subnet.
@@ -63,7 +66,37 @@ func (d *DHCPD) Configure() error {
 	}
 	defer leasesFile.Close()
 
-	fmt.Println(d.configFileDir, d.leasesFileDir)
+	return nil
+}
+
+func (d *DHCPD) Start() error {
+	command := exec.Command(filepath.Join("/usr", "sbin", "dhcpd"), "-f", "-cf", d.configFileDir, "-lf", d.leasesFileDir, d.Device)
+
+	command.Stdout = os.Stdout
+	command.Stderr = os.Stderr
+
+	command.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+
+	d.instance = command
+
+	return command.Start()
+}
+
+func (d *DHCPD) Wait() error {
+	_, err := d.instance.Process.Wait()
+
+	return err
+}
+
+func (d *DHCPD) Stop() error {
+	processGroupID, err := syscall.Getpgid(d.instance.Process.Pid)
+	if err != nil {
+		return err
+	}
+
+	if err := syscall.Kill(-processGroupID, syscall.SIGKILL); err != nil {
+		return err
+	}
 
 	return nil
 }
