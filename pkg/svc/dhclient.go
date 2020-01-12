@@ -104,6 +104,42 @@ func (m *DHClientManager) Get(_ context.Context, args *godhcpd.DHClientManagedId
 	return nil, status.Errorf(codes.NotFound, msg)
 }
 
+// Delete deletes a dhcp client.
+func (m *DHClientManager) Delete(_ context.Context, args *godhcpd.DHClientManagedId) (*godhcpd.DHClientManagedId, error) {
+	id := args.GetId()
+
+	DHClient := m.DHClientsManaged[id]
+	if DHClient == nil {
+		msg := "dhcp client not found"
+
+		log.Error(msg)
+
+		return nil, status.Errorf(codes.NotFound, msg)
+	}
+
+	log.Info("Stopping dhcp client")
+
+	if err := DHClient.DisableAutoRestart(); err != nil { // Manually disable auto restart; disables crash recovery even if process is not running
+		log.Error(err.Error())
+
+		return nil, status.Errorf(codes.Unknown, err.Error())
+	}
+
+	if DHClient.IsRunning() {
+		if err := DHClient.Stop(); err != nil { // Stop is sync, so no need to `.Wait()`
+			log.Error(err.Error())
+
+			return nil, status.Errorf(codes.Unknown, err.Error())
+		}
+	}
+
+	delete(m.DHClientsManaged, id)
+
+	return &godhcpd.DHClientManagedId{
+		Id: id,
+	}, nil
+}
+
 // Extract extracts the ISC DHCP client binary.
 func (m *DHClientManager) Extract() error {
 	statikFS, err := fs.New()
