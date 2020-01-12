@@ -80,14 +80,14 @@ https://pojntfx.github.io/godhcpd/`,
 			msg := "Could not stop dhcp server"
 
 			for _, DHCPD := range DHCPDService.DHCPDsManaged {
-				if err := DHCPD.Stop(); err != nil {
+				if err := DHCPD.DisableAutoRestart(); err != nil { // Manually disable auto restart; disables crash recovery even if process is not running
 					log.Fatal(msg, rz.Err(err))
 				}
-			}
 
-			for _, DHCPD := range DHCPDService.DHCPDsManaged {
-				if err := DHCPD.Wait(); err != nil {
-					log.Fatal(msg, rz.Err(err))
+				if DHCPD.IsRunning() {
+					if err := DHCPD.Stop(); err != nil { // Stop is sync, so no need to `.Wait()`
+						log.Fatal(msg, rz.Err(err))
+					}
 				}
 			}
 
