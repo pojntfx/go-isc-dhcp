@@ -9,7 +9,7 @@ import (
 	"syscall"
 )
 
-// DHCPD is a DHCP server.
+// DHCPD is a dhcp server.
 type DHCPD struct {
 	utils.ProcessWorker
 	Subnets       []Subnet
@@ -21,7 +21,7 @@ type DHCPD struct {
 	leasesFileDir string
 }
 
-// Subnet is a DHCP subnet.
+// Subnet is a dhcp subnet.
 type Subnet struct {
 	Network string
 	Netmask string
@@ -34,7 +34,7 @@ type Range struct {
 	End   string
 }
 
-// Configure configures the DHCP server.
+// Configure configures the dhcp server.
 func (d *DHCPD) Configure() error {
 	var configFileContent string
 	for _, subnet := range d.Subnets {
@@ -71,7 +71,7 @@ func (d *DHCPD) Configure() error {
 	return nil
 }
 
-// Start starts the the DHCP server.
+// Start starts the the dhcp server.
 func (d *DHCPD) Start() error {
 	d.ScheduledForDeletion = false
 
@@ -87,7 +87,7 @@ func (d *DHCPD) Start() error {
 	return command.Start()
 }
 
-// Cleanup deletes the state of the DHCP server.
+// Cleanup deletes the state of the dhcp server.
 func (d *DHCPD) Cleanup() error {
 	return os.RemoveAll(d.StateDir)
 }

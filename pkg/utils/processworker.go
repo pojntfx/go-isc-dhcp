@@ -5,7 +5,7 @@ import (
 	"syscall"
 )
 
-// ProcessWorker is a worker that manages a process
+// ProcessWorker is a worker that manages a process.
 type ProcessWorker struct {
 	Instance             *exec.Cmd
 	ScheduledForDeletion bool
