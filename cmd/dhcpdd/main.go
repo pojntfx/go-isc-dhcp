@@ -2,23 +2,28 @@ package main
 
 import (
 	"fmt"
+	"github.com/pojntfx/godhcpd/pkg/svc"
+	"github.com/pojntfx/godhcpd/pkg/workers"
+	uuid "github.com/satori/go.uuid"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"syscall"
-
-	"github.com/pojntfx/godhcpd/pkg/workers"
-	uuid "github.com/satori/go.uuid"
 )
 
 func main() {
 	id := uuid.NewV4().String()
 	stateDir := filepath.Join(os.TempDir(), "godhcpd", "dhcpd", id)
+	binaryDir := filepath.Join(os.TempDir(), "dhcpd")
+
+	dhcpdManager := svc.DHCPDManager{
+		BinaryDir: binaryDir,
+	}
+	if err := dhcpdManager.Extract(); err != nil {
+		fmt.Println(err)
+	}
 
 	dhcpd := workers.DHCPD{
-		ID:       id,
-		StateDir: stateDir,
-		Device:   "edge0",
 		Subnets: []workers.Subnet{
 			{
 				Network: "192.168.1.0",
@@ -29,6 +34,10 @@ func main() {
 				},
 			},
 		},
+		BinaryDir: dhcpdManager.BinaryDir,
+		ID:        id,
+		StateDir:  stateDir,
+		Device:    "edge0",
 	}
 
 	if err := dhcpd.Configure(); err != nil {

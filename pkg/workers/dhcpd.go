@@ -11,6 +11,7 @@ import (
 // DHCPD is a DHCP server.
 type DHCPD struct {
 	Subnets       []Subnet
+	BinaryDir     string
 	ID            string
 	StateDir      string
 	Device        string
@@ -69,8 +70,9 @@ func (d *DHCPD) Configure() error {
 	return nil
 }
 
+// Start starts the the DHCP server.
 func (d *DHCPD) Start() error {
-	command := exec.Command(filepath.Join("/usr", "sbin", "dhcpd"), "-f", "-cf", d.configFileDir, "-lf", d.leasesFileDir, d.Device)
+	command := exec.Command(d.BinaryDir, "-f", "-cf", d.configFileDir, "-lf", d.leasesFileDir, d.Device)
 
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
@@ -82,12 +84,14 @@ func (d *DHCPD) Start() error {
 	return command.Start()
 }
 
+// Wait waits for the DHCP server to stop.
 func (d *DHCPD) Wait() error {
 	_, err := d.instance.Process.Wait()
 
 	return err
 }
 
+// Stop stops the DHCP server.
 func (d *DHCPD) Stop() error {
 	processGroupID, err := syscall.Getpgid(d.instance.Process.Pid)
 	if err != nil {
