@@ -1,0 +1,5 @@
+syntax = "proto3";
+
+package godhcpd;
+
+import public "dhcpd.proto";

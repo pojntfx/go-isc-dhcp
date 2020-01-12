@@ -2,9 +2,14 @@ package main
 
 import (
 	"fmt"
+	godhcpd "github.com/pojntfx/godhcpd/pkg/proto/generated"
 	"github.com/pojntfx/godhcpd/pkg/svc"
 	"github.com/pojntfx/godhcpd/pkg/workers"
-	uuid "github.com/satori/go.uuid"
+	"gitlab.com/bloom42/libs/rz-go"
+	"gitlab.com/bloom42/libs/rz-go/log"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"net"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -12,37 +17,23 @@ import (
 )
 
 func main() {
-	id := uuid.NewV4().String()
-	stateDir := filepath.Join(os.TempDir(), "godhcpd", "dhcpd", id)
 	binaryDir := filepath.Join(os.TempDir(), "dhcpd")
 
-	dhcpdManager := svc.DHCPDManager{
-		BinaryDir: binaryDir,
-	}
-	if err := dhcpdManager.Extract(); err != nil {
+	listener, err := net.Listen("tcp", "localhost:30001")
+	if err != nil {
 		fmt.Println(err)
 	}
 
-	dhcpd := workers.DHCPD{
-		Subnets: []workers.Subnet{
-			{
-				Network: "192.168.1.0",
-				Netmask: "255.255.255.0",
-				Range: workers.Range{
-					Start: "192.168.1.10",
-					End:   "192.168.1.100",
-				},
-			},
-		},
-		BinaryDir: dhcpdManager.BinaryDir,
-		ID:        id,
-		StateDir:  stateDir,
-		Device:    "edge0",
+	server := grpc.NewServer()
+	reflection.Register(server)
+
+	DHCPDService := svc.DHCPDManager{
+		BinaryDir:     binaryDir,
+		StateDir:      filepath.Join(os.TempDir(), "godhcpd", "dhcpd"),
+		DHCPDsManaged: make(map[string]*workers.DHCPD),
 	}
 
-	if err := dhcpd.Configure(); err != nil {
-		fmt.Println(err)
-	}
+	godhcpd.RegisterDHCPDManagerServer(server, &DHCPDService)
 
 	interrupt := make(chan os.Signal, 2)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
@@ -56,16 +47,32 @@ func main() {
 			os.Exit(1)
 		}()
 
-		if err := dhcpd.Stop(); err != nil {
-			fmt.Println(err)
+		log.Info("Gracefully stopping server (this might take a few seconds)")
+
+		msg := "Could not stop dhcp server"
+
+		for _, DHCPD := range DHCPDService.DHCPDsManaged {
+			if err := DHCPD.Stop(); err != nil {
+				log.Fatal(msg, rz.Err(err))
+			}
 		}
+
+		for _, DHCPD := range DHCPDService.DHCPDsManaged {
+			if err := DHCPD.Wait(); err != nil {
+				log.Fatal(msg, rz.Err(err))
+			}
+		}
+
+		server.GracefulStop()
 	}()
 
-	if err := dhcpd.Start(); err != nil {
+	if err := DHCPDService.Extract(); err != nil {
 		fmt.Println(err)
 	}
 
-	if err := dhcpd.Wait(); err != nil {
+	log.Info("Starting server")
+
+	if err := server.Serve(listener); err != nil {
 		fmt.Println(err)
 	}
 }

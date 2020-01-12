@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package godhcpd;
+
+// DHCPDManager manages DHCP servers.
+service DHCPDManager {
+  rpc Create(DHCPDManagerCreateArgs) returns (DHCPDManagerCreateReply) {};
+}
+
+message DHCPDManagerCreateArgs {
+  string Device = 1;
+  repeated Subnet Subnets = 2;
+}
+
+message Subnet {
+  string Network = 1;
+  string Netmask = 2;
+  Range Range = 3;
+}
+
+message Range {
+  string Start = 1;
+  string End = 2;
+}
+
+message DHCPDManagerCreateReply { string Id = 1; }
