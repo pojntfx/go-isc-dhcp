@@ -25,8 +25,8 @@ type DHCPDManager struct {
 	DHCPDsManaged map[string]*workers.DHCPD
 }
 
-// Create creates a DHCP server.
-func (m *DHCPDManager) Create(_ context.Context, args *godhcpd.DHCPDManagerCreateArgs) (*godhcpd.DHCPDManagerCreateReply, error) {
+// Create creates a dhcp server.
+func (m *DHCPDManager) Create(_ context.Context, args *godhcpd.DHCPD) (*godhcpd.DHCPDManagerCreateReply, error) {
 	id := uuid.NewV4().String()
 
 	subnets := args.GetSubnets()
@@ -79,6 +79,41 @@ func (m *DHCPDManager) Create(_ context.Context, args *godhcpd.DHCPDManagerCreat
 
 	return &godhcpd.DHCPDManagerCreateReply{
 		Id: id,
+	}, nil
+}
+
+// List lists the managed dhcp servers.
+func (m *DHCPDManager) List(_ context.Context, args *godhcpd.DHCPDManagerListArgs) (*godhcpd.DHCPDManagerListReply, error) {
+	log.Info("Listing dhcp servers")
+
+	var DHCPDsManaged []*godhcpd.DHCPDManaged
+
+	for id, DHCPD := range m.DHCPDsManaged {
+		var subnetsForReply []*godhcpd.Subnet
+		for _, subnet := range DHCPD.Subnets {
+			subnetForReply := &godhcpd.Subnet{
+				Network: subnet.Network,
+				Netmask: subnet.Netmask,
+				Range: &godhcpd.Range{
+					Start: subnet.Range.Start,
+					End:   subnet.Range.End,
+				},
+			}
+
+			subnetsForReply = append(subnetsForReply, subnetForReply)
+		}
+
+		DHCPDManaged := godhcpd.DHCPDManaged{
+			Id:      id,
+			Device:  DHCPD.Device,
+			Subnets: subnetsForReply,
+		}
+
+		DHCPDsManaged = append(DHCPDsManaged, &DHCPDManaged)
+	}
+
+	return &godhcpd.DHCPDManagerListReply{
+		DHCPDsManaged: DHCPDsManaged,
 	}, nil
 }
 
