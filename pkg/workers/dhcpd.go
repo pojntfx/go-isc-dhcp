@@ -104,3 +104,8 @@ func (d *DHCPD) Stop() error {
 
 	return nil
 }
+
+// Cleanup deletes the state of the DHCP server.
+func (d *DHCPD) Cleanup() error {
+	return os.RemoveAll(d.StateDir)
+}
