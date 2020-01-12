@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package godhcpd;
+
+// DHClientManager manages DHCP clients.
+service DHClientManager {
+  rpc Create(DHClient) returns (DHClientManagedId) {};
+  rpc List(DHClientManagerListArgs) returns (DHClientManagerListReply) {};
+  rpc Get(DHClientManagedId) returns (DHClientManaged) {};
+  rpc Delete(DHClientManagedId) returns (DHClientManagedId) {};
+}
+
+message DHClient { string Device = 1; }
+
+message DHClientManaged {
+  string Id = 1;
+  string Device = 2;
+}
+
+message DHClientManagerListArgs {}
+
+message DHClientManagedId { string Id = 1; }
+
+message DHClientManagerListReply {
+  repeated DHClientManaged DHClientsManaged = 1;
+}

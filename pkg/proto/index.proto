@@ -2,4 +2,5 @@ syntax = "proto3";
 
 package godhcpd;
 
+import public "dhclient.proto";
 import public "dhcpd.proto";

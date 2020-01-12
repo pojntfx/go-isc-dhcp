@@ -17,7 +17,7 @@ import (
 	"path/filepath"
 )
 
-// DHCPDManager manages DHCP servers.
+// DHCPDManager manages dhcp servers.
 type DHCPDManager struct {
 	godhcpd.UnimplementedDHCPDManagerServer
 	BinaryDir     string
