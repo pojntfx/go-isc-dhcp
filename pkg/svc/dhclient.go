@@ -7,6 +7,8 @@ import (
 	"github.com/rakyll/statik/fs"
 	uuid "github.com/satori/go.uuid"
 	"gitlab.com/bloom42/libs/rz-go/log"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"os"
 )
 
@@ -73,6 +75,33 @@ func (m *DHClientManager) List(_ context.Context, args *godhcpd.DHClientManagerL
 	return &godhcpd.DHClientManagerListReply{
 		DHClientsManaged: DHClients,
 	}, nil
+}
+
+// Get gets one of the managed dhcp clients.
+func (m *DHClientManager) Get(_ context.Context, args *godhcpd.DHClientManagedId) (*godhcpd.DHClientManaged, error) {
+	log.Info("Getting dhcp client")
+
+	var DHClientManaged *godhcpd.DHClientManaged
+
+	for id, DHClient := range m.DHClientsManaged {
+		if id == args.GetId() {
+			DHClientManaged = &godhcpd.DHClientManaged{
+				Id:     id,
+				Device: DHClient.Device,
+			}
+			break
+		}
+	}
+
+	if DHClientManaged != nil {
+		return DHClientManaged, nil
+	}
+
+	msg := "dhcp client not found"
+
+	log.Error(msg)
+
+	return nil, status.Errorf(codes.NotFound, msg)
 }
 
 // Extract extracts the ISC DHCP client binary.

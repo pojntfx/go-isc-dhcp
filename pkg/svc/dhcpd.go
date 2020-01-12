@@ -141,7 +141,7 @@ func (m *DHCPDManager) Get(_ context.Context, args *godhcpd.DHCPDManagedId) (*go
 		return DHCPDManaged, nil
 	}
 
-	msg := "dhcp server not not found"
+	msg := "dhcp server not found"
 
 	log.Error(msg)
 
