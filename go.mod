@@ -3,8 +3,12 @@ module github.com/pojntfx/godhcpd
 go 1.13
 
 require (
+	github.com/fatih/color v1.9.0 // indirect
+	github.com/ghodss/yaml v1.0.0
 	github.com/golang/protobuf v1.3.2
+	github.com/gosuri/uitable v0.0.4
 	github.com/kr/pretty v0.2.0 // indirect
+	github.com/mattn/go-runewidth v0.0.7 // indirect
 	github.com/rakyll/statik v0.1.6
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/cobra v0.0.5
