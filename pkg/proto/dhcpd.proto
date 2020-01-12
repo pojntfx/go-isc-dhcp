@@ -6,7 +6,7 @@ package godhcpd;
 service DHCPDManager {
   rpc Create(DHCPD) returns (DHCPDManagerCreateReply) {};
   rpc List(DHCPDManagerListArgs) returns (DHCPDManagerListReply) {};
-  // rpc Get(DHCPDManagerGetArgs) returns (DHCPDManaged) {};
+  rpc Get(DHCPDManagerGetArgs) returns (DHCPDManaged) {};
   // rpc Delete(DHCPDManagerDeleteArgs) returns (DHCPDManagerDeleteReply) {};
 }
 
@@ -33,6 +33,8 @@ message DHCPDManaged {
 }
 
 message DHCPDManagerListArgs {}
+
+message DHCPDManagerGetArgs { string Id = 1; }
 
 message DHCPDManagerCreateReply { string Id = 1; }
 
