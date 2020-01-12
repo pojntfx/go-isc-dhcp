@@ -12,9 +12,9 @@ Management daemons and CLIs for the ISC DHCP server and client.
 In a similar way, `godhcpd` is built of multiple components. The components are:
 
 - `dhcpdd`, an ISC DHCP server management daemon with a gRPC interface
-- `dhclientd`, an ISC DHCP client management daemon with a gRPC interface (TBD)
+- `dhclientd`, an ISC DHCP client management daemon with a gRPC interface
 - `dhcpdctl`, a CLI for `dhcpdd`
-- `dhclientctl`, a CLI for `dhclientd` (TBD)
+- `dhclientctl`, a CLI for `dhclientd`
 
 `dhcpdd` bundles the `dhcpd` and `dhclient` binaries into it's own binary and extracts them on startup, so there is no need to install the ISC DHCP server and client manually.
 
@@ -50,7 +50,23 @@ Flags:
 
 #### `dhclientd`
 
-(TBD)
+You may also set the flags by setting env variables in the format `DHCLIENTD_[FLAG]` (i.e. `DHCLIENTD_DHCLIENTD_CONFIGFILE=examples/dhclientd.yaml`) or by using a [configuration file](examples/dhclientd.yaml).
+
+```bash
+% dhclientd --help
+dhclientd is the ISC DHCP client management daemon.
+
+Find more information at:
+https://pojntfx.github.io/godhcpd/
+
+Usage:
+  dhclientd [flags]
+
+Flags:
+  -f, --dhclientd.configFile string       Configuration file to use.
+  -l, --dhclientd.listenHostPort string   TCP listen host:port. (default "localhost:1241")
+  -h, --help                              help for dhclientd
+```
 
 ### Client CLIs
 
@@ -71,7 +87,7 @@ Usage:
   dhcpdctl [command]
 
 Available Commands:
-  apply       Apply an dhcp server
+  apply       Apply a dhcp server
   delete      Delete one or more dhcp server(s)
   get         Get one or all dhcp server(s)
   help        Help about any command
@@ -84,7 +100,29 @@ Use "dhcpdctl [command] --help" for more information about a command.
 
 #### `dhclientctl`
 
-(TBD)
+You may also set the flags by setting env variables in the format `DHCLIENT_[FLAG]` (i.e. `DHCLIENT_DHCLIENT_CONFIGFILE=examples/dhclient.yaml`) or by using a [configuration file](examples/dhclient.yaml).
+
+```bash
+% dhclientctl --help
+dhclientctl manages dhclientd, the ISC DHCP client management daemon.
+
+Find more information at:
+https://pojntfx.github.io/godhcpd/
+
+Usage:
+  dhclientctl [command]
+
+Available Commands:
+  apply       Apply a dhcp client
+  delete      Delete one or more dhcp client(s)
+  get         Get one or all dhcp client(s)
+  help        Help about any command
+
+Flags:
+  -h, --help   help for dhclientctl
+
+Use "dhclientctl [command] --help" for more information about a command.
+```
 
 ## License
 
