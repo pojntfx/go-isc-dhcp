@@ -24,7 +24,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type DHCPDManagerCreateArgs struct {
+type DHCPD struct {
 	Device               string    `protobuf:"bytes,1,opt,name=Device,proto3" json:"Device,omitempty"`
 	Subnets              []*Subnet `protobuf:"bytes,2,rep,name=Subnets,proto3" json:"Subnets,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
@@ -32,39 +32,39 @@ type DHCPDManagerCreateArgs struct {
 	XXX_sizecache        int32     `json:"-"`
 }
 
-func (m *DHCPDManagerCreateArgs) Reset()         { *m = DHCPDManagerCreateArgs{} }
-func (m *DHCPDManagerCreateArgs) String() string { return proto.CompactTextString(m) }
-func (*DHCPDManagerCreateArgs) ProtoMessage()    {}
-func (*DHCPDManagerCreateArgs) Descriptor() ([]byte, []int) {
+func (m *DHCPD) Reset()         { *m = DHCPD{} }
+func (m *DHCPD) String() string { return proto.CompactTextString(m) }
+func (*DHCPD) ProtoMessage()    {}
+func (*DHCPD) Descriptor() ([]byte, []int) {
 	return fileDescriptor_87f4f7f9a47f6dd7, []int{0}
 }
 
-func (m *DHCPDManagerCreateArgs) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DHCPDManagerCreateArgs.Unmarshal(m, b)
+func (m *DHCPD) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DHCPD.Unmarshal(m, b)
 }
-func (m *DHCPDManagerCreateArgs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DHCPDManagerCreateArgs.Marshal(b, m, deterministic)
+func (m *DHCPD) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DHCPD.Marshal(b, m, deterministic)
 }
-func (m *DHCPDManagerCreateArgs) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DHCPDManagerCreateArgs.Merge(m, src)
+func (m *DHCPD) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DHCPD.Merge(m, src)
 }
-func (m *DHCPDManagerCreateArgs) XXX_Size() int {
-	return xxx_messageInfo_DHCPDManagerCreateArgs.Size(m)
+func (m *DHCPD) XXX_Size() int {
+	return xxx_messageInfo_DHCPD.Size(m)
 }
-func (m *DHCPDManagerCreateArgs) XXX_DiscardUnknown() {
-	xxx_messageInfo_DHCPDManagerCreateArgs.DiscardUnknown(m)
+func (m *DHCPD) XXX_DiscardUnknown() {
+	xxx_messageInfo_DHCPD.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DHCPDManagerCreateArgs proto.InternalMessageInfo
+var xxx_messageInfo_DHCPD proto.InternalMessageInfo
 
-func (m *DHCPDManagerCreateArgs) GetDevice() string {
+func (m *DHCPD) GetDevice() string {
 	if m != nil {
 		return m.Device
 	}
 	return ""
 }
 
-func (m *DHCPDManagerCreateArgs) GetSubnets() []*Subnet {
+func (m *DHCPD) GetSubnets() []*Subnet {
 	if m != nil {
 		return m.Subnets
 	}
@@ -173,6 +173,92 @@ func (m *Range) GetEnd() string {
 	return ""
 }
 
+type DHCPDManaged struct {
+	Id                   string    `protobuf:"bytes,1,opt,name=Id,proto3" json:"Id,omitempty"`
+	Device               string    `protobuf:"bytes,2,opt,name=Device,proto3" json:"Device,omitempty"`
+	Subnets              []*Subnet `protobuf:"bytes,3,rep,name=Subnets,proto3" json:"Subnets,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *DHCPDManaged) Reset()         { *m = DHCPDManaged{} }
+func (m *DHCPDManaged) String() string { return proto.CompactTextString(m) }
+func (*DHCPDManaged) ProtoMessage()    {}
+func (*DHCPDManaged) Descriptor() ([]byte, []int) {
+	return fileDescriptor_87f4f7f9a47f6dd7, []int{3}
+}
+
+func (m *DHCPDManaged) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DHCPDManaged.Unmarshal(m, b)
+}
+func (m *DHCPDManaged) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DHCPDManaged.Marshal(b, m, deterministic)
+}
+func (m *DHCPDManaged) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DHCPDManaged.Merge(m, src)
+}
+func (m *DHCPDManaged) XXX_Size() int {
+	return xxx_messageInfo_DHCPDManaged.Size(m)
+}
+func (m *DHCPDManaged) XXX_DiscardUnknown() {
+	xxx_messageInfo_DHCPDManaged.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DHCPDManaged proto.InternalMessageInfo
+
+func (m *DHCPDManaged) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *DHCPDManaged) GetDevice() string {
+	if m != nil {
+		return m.Device
+	}
+	return ""
+}
+
+func (m *DHCPDManaged) GetSubnets() []*Subnet {
+	if m != nil {
+		return m.Subnets
+	}
+	return nil
+}
+
+type DHCPDManagerListArgs struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DHCPDManagerListArgs) Reset()         { *m = DHCPDManagerListArgs{} }
+func (m *DHCPDManagerListArgs) String() string { return proto.CompactTextString(m) }
+func (*DHCPDManagerListArgs) ProtoMessage()    {}
+func (*DHCPDManagerListArgs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_87f4f7f9a47f6dd7, []int{4}
+}
+
+func (m *DHCPDManagerListArgs) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DHCPDManagerListArgs.Unmarshal(m, b)
+}
+func (m *DHCPDManagerListArgs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DHCPDManagerListArgs.Marshal(b, m, deterministic)
+}
+func (m *DHCPDManagerListArgs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DHCPDManagerListArgs.Merge(m, src)
+}
+func (m *DHCPDManagerListArgs) XXX_Size() int {
+	return xxx_messageInfo_DHCPDManagerListArgs.Size(m)
+}
+func (m *DHCPDManagerListArgs) XXX_DiscardUnknown() {
+	xxx_messageInfo_DHCPDManagerListArgs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DHCPDManagerListArgs proto.InternalMessageInfo
+
 type DHCPDManagerCreateReply struct {
 	Id                   string   `protobuf:"bytes,1,opt,name=Id,proto3" json:"Id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -184,7 +270,7 @@ func (m *DHCPDManagerCreateReply) Reset()         { *m = DHCPDManagerCreateReply
 func (m *DHCPDManagerCreateReply) String() string { return proto.CompactTextString(m) }
 func (*DHCPDManagerCreateReply) ProtoMessage()    {}
 func (*DHCPDManagerCreateReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87f4f7f9a47f6dd7, []int{3}
+	return fileDescriptor_87f4f7f9a47f6dd7, []int{5}
 }
 
 func (m *DHCPDManagerCreateReply) XXX_Unmarshal(b []byte) error {
@@ -212,33 +298,79 @@ func (m *DHCPDManagerCreateReply) GetId() string {
 	return ""
 }
 
+type DHCPDManagerListReply struct {
+	DHCPDsManaged        []*DHCPDManaged `protobuf:"bytes,1,rep,name=DHCPDsManaged,proto3" json:"DHCPDsManaged,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
+	XXX_sizecache        int32           `json:"-"`
+}
+
+func (m *DHCPDManagerListReply) Reset()         { *m = DHCPDManagerListReply{} }
+func (m *DHCPDManagerListReply) String() string { return proto.CompactTextString(m) }
+func (*DHCPDManagerListReply) ProtoMessage()    {}
+func (*DHCPDManagerListReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_87f4f7f9a47f6dd7, []int{6}
+}
+
+func (m *DHCPDManagerListReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DHCPDManagerListReply.Unmarshal(m, b)
+}
+func (m *DHCPDManagerListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DHCPDManagerListReply.Marshal(b, m, deterministic)
+}
+func (m *DHCPDManagerListReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DHCPDManagerListReply.Merge(m, src)
+}
+func (m *DHCPDManagerListReply) XXX_Size() int {
+	return xxx_messageInfo_DHCPDManagerListReply.Size(m)
+}
+func (m *DHCPDManagerListReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_DHCPDManagerListReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DHCPDManagerListReply proto.InternalMessageInfo
+
+func (m *DHCPDManagerListReply) GetDHCPDsManaged() []*DHCPDManaged {
+	if m != nil {
+		return m.DHCPDsManaged
+	}
+	return nil
+}
+
 func init() {
-	proto.RegisterType((*DHCPDManagerCreateArgs)(nil), "godhcpd.DHCPDManagerCreateArgs")
+	proto.RegisterType((*DHCPD)(nil), "godhcpd.DHCPD")
 	proto.RegisterType((*Subnet)(nil), "godhcpd.Subnet")
 	proto.RegisterType((*Range)(nil), "godhcpd.Range")
+	proto.RegisterType((*DHCPDManaged)(nil), "godhcpd.DHCPDManaged")
+	proto.RegisterType((*DHCPDManagerListArgs)(nil), "godhcpd.DHCPDManagerListArgs")
 	proto.RegisterType((*DHCPDManagerCreateReply)(nil), "godhcpd.DHCPDManagerCreateReply")
+	proto.RegisterType((*DHCPDManagerListReply)(nil), "godhcpd.DHCPDManagerListReply")
 }
 
 func init() { proto.RegisterFile("dhcpd.proto", fileDescriptor_87f4f7f9a47f6dd7) }
 
 var fileDescriptor_87f4f7f9a47f6dd7 = []byte{
-	// 253 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xc1, 0x4b, 0xc3, 0x30,
-	0x14, 0xc6, 0x6d, 0xcb, 0x5a, 0x7c, 0x95, 0x29, 0x0f, 0x99, 0xc1, 0x8b, 0x25, 0x78, 0xe8, 0x2e,
-	0x15, 0xea, 0x5f, 0x20, 0xab, 0xe0, 0x0e, 0x13, 0xc9, 0x8e, 0xe2, 0x21, 0x5d, 0x1e, 0x55, 0xa6,
-	0x6d, 0x49, 0xa3, 0xe2, 0x7f, 0x2f, 0x4b, 0xb2, 0x22, 0x28, 0xde, 0xde, 0xef, 0x7d, 0x5f, 0xbf,
-	0xaf, 0x49, 0x20, 0x55, 0xcf, 0x9b, 0x5e, 0x15, 0xbd, 0xee, 0x4c, 0x87, 0x49, 0xd3, 0x59, 0xe4,
-	0x8f, 0x30, 0xab, 0xee, 0x16, 0x0f, 0xd5, 0x4a, 0xb6, 0xb2, 0x21, 0xbd, 0xd0, 0x24, 0x0d, 0xdd,
-	0xe8, 0x66, 0xc0, 0x19, 0xc4, 0x15, 0x7d, 0xbc, 0x6c, 0x88, 0x05, 0x59, 0x90, 0x1f, 0x0a, 0x4f,
-	0x38, 0x87, 0x64, 0xfd, 0x5e, 0xb7, 0x64, 0x06, 0x16, 0x66, 0x51, 0x9e, 0x96, 0xc7, 0x85, 0x0f,
-	0x2b, 0xdc, 0x5e, 0xec, 0x75, 0x5e, 0x43, 0xec, 0x46, 0x64, 0x90, 0xdc, 0x93, 0xf9, 0xec, 0xf4,
-	0xd6, 0xa7, 0xed, 0xd1, 0x2b, 0x6f, 0x72, 0xd8, 0xb2, 0x70, 0x54, 0x76, 0x88, 0x97, 0x30, 0x11,
-	0xb2, 0x6d, 0x88, 0x45, 0x59, 0x90, 0xa7, 0xe5, 0x74, 0xac, 0xb1, 0x5b, 0xe1, 0x44, 0x7e, 0xe5,
-	0x5d, 0x78, 0x0a, 0x93, 0xb5, 0x91, 0xda, 0xf8, 0x02, 0x07, 0x78, 0x02, 0xd1, 0x6d, 0xab, 0x7c,
-	0xf4, 0x6e, 0xe4, 0x73, 0x38, 0xfb, 0x7d, 0x62, 0x41, 0xfd, 0xeb, 0x17, 0x4e, 0x21, 0x5c, 0x2a,
-	0xff, 0x7d, 0xb8, 0x54, 0xe5, 0x13, 0x1c, 0xfd, 0xb4, 0xe2, 0x0a, 0x62, 0x67, 0xc7, 0x8b, 0xf1,
-	0x67, 0xfe, 0xbe, 0xbd, 0xf3, 0xec, 0x1f, 0x83, 0x2d, 0xe3, 0x07, 0x75, 0x6c, 0xdf, 0xe2, 0xfa,
-	0x3b, 0x00, 0x00, 0xff, 0xff, 0x67, 0x58, 0xb2, 0x15, 0x9a, 0x01, 0x00, 0x00,
+	// 320 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0x51, 0x4b, 0xf3, 0x30,
+	0x14, 0xfd, 0xda, 0x7e, 0xeb, 0xf0, 0x4e, 0xa7, 0x5c, 0xb6, 0x19, 0x06, 0x4a, 0x09, 0x3e, 0x6c,
+	0x2f, 0x13, 0xe6, 0xa3, 0xbe, 0xc8, 0x26, 0x3a, 0x51, 0x91, 0xcc, 0x3f, 0x90, 0x2d, 0xa1, 0x8e,
+	0x69, 0x3b, 0xd2, 0xa8, 0xf8, 0x43, 0xfc, 0xbf, 0xb2, 0x24, 0x2d, 0xed, 0xd8, 0xf0, 0x2d, 0xe7,
+	0x9e, 0x73, 0xcf, 0x3d, 0x07, 0x02, 0x0d, 0xf1, 0x3a, 0x5f, 0x89, 0xc1, 0x4a, 0xa5, 0x3a, 0xc5,
+	0x7a, 0x9c, 0x1a, 0x48, 0xef, 0xa1, 0x36, 0xbe, 0x1b, 0x3d, 0x8f, 0xb1, 0x03, 0xe1, 0x58, 0x7e,
+	0x2e, 0xe6, 0x92, 0x78, 0x91, 0xd7, 0xdb, 0x63, 0x0e, 0x61, 0x1f, 0xea, 0xd3, 0x8f, 0x59, 0x22,
+	0x75, 0x46, 0xfc, 0x28, 0xe8, 0x35, 0x86, 0x87, 0x03, 0xb7, 0x3b, 0xb0, 0x73, 0x96, 0xf3, 0x74,
+	0x06, 0xa1, 0x7d, 0x22, 0x81, 0xfa, 0x93, 0xd4, 0x5f, 0xa9, 0x5a, 0x3a, 0xb7, 0x1c, 0x3a, 0xe6,
+	0x9d, 0x67, 0x4b, 0xe2, 0x17, 0xcc, 0x1a, 0xe2, 0x19, 0xd4, 0x18, 0x4f, 0x62, 0x49, 0x82, 0xc8,
+	0xeb, 0x35, 0x86, 0xcd, 0xe2, 0x8c, 0x99, 0x32, 0x4b, 0xd2, 0x73, 0xa7, 0xc2, 0x16, 0xd4, 0xa6,
+	0x9a, 0x2b, 0xed, 0x0e, 0x58, 0x80, 0x47, 0x10, 0xdc, 0x24, 0xc2, 0x59, 0xaf, 0x9f, 0x94, 0xc3,
+	0xbe, 0x29, 0xf8, 0xc8, 0x13, 0x1e, 0x4b, 0x81, 0x4d, 0xf0, 0x27, 0xc2, 0x2d, 0xf9, 0x13, 0x51,
+	0xea, 0xed, 0xef, 0xea, 0x1d, 0xfc, 0xd1, 0xbb, 0x03, 0xad, 0xd2, 0x09, 0xf5, 0xb0, 0xc8, 0xf4,
+	0xb5, 0x8a, 0x33, 0xda, 0x87, 0xe3, 0xf2, 0x7c, 0xa4, 0x24, 0xd7, 0x92, 0xc9, 0xd5, 0xdb, 0xf7,
+	0x66, 0x0a, 0xfa, 0x02, 0xed, 0x4d, 0x0b, 0x2b, 0xbc, 0x84, 0x03, 0x43, 0x64, 0x2e, 0x3f, 0xf1,
+	0x4c, 0x98, 0x76, 0x11, 0xa6, 0x5c, 0x8e, 0x55, 0xb5, 0xc3, 0x1f, 0xaf, 0x52, 0x5e, 0xe1, 0x15,
+	0x84, 0x36, 0x05, 0x36, 0xab, 0x06, 0xdd, 0x68, 0x9b, 0x61, 0x39, 0x32, 0xfd, 0x87, 0xb7, 0xf0,
+	0x7f, 0x1d, 0x0c, 0x4f, 0xb6, 0x6a, 0xf3, 0xda, 0xdd, 0xd3, 0x9d, 0xb4, 0x33, 0x9a, 0x85, 0xe6,
+	0x13, 0x5e, 0xfc, 0x06, 0x00, 0x00, 0xff, 0xff, 0x2c, 0x28, 0x61, 0xa9, 0x93, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -253,7 +385,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type DHCPDManagerClient interface {
-	Create(ctx context.Context, in *DHCPDManagerCreateArgs, opts ...grpc.CallOption) (*DHCPDManagerCreateReply, error)
+	Create(ctx context.Context, in *DHCPD, opts ...grpc.CallOption) (*DHCPDManagerCreateReply, error)
+	List(ctx context.Context, in *DHCPDManagerListArgs, opts ...grpc.CallOption) (*DHCPDManagerListReply, error)
 }
 
 type dHCPDManagerClient struct {
@@ -264,7 +397,7 @@ func NewDHCPDManagerClient(cc *grpc.ClientConn) DHCPDManagerClient {
 	return &dHCPDManagerClient{cc}
 }
 
-func (c *dHCPDManagerClient) Create(ctx context.Context, in *DHCPDManagerCreateArgs, opts ...grpc.CallOption) (*DHCPDManagerCreateReply, error) {
+func (c *dHCPDManagerClient) Create(ctx context.Context, in *DHCPD, opts ...grpc.CallOption) (*DHCPDManagerCreateReply, error) {
 	out := new(DHCPDManagerCreateReply)
 	err := c.cc.Invoke(ctx, "/godhcpd.DHCPDManager/Create", in, out, opts...)
 	if err != nil {
@@ -273,17 +406,30 @@ func (c *dHCPDManagerClient) Create(ctx context.Context, in *DHCPDManagerCreateA
 	return out, nil
 }
 
+func (c *dHCPDManagerClient) List(ctx context.Context, in *DHCPDManagerListArgs, opts ...grpc.CallOption) (*DHCPDManagerListReply, error) {
+	out := new(DHCPDManagerListReply)
+	err := c.cc.Invoke(ctx, "/godhcpd.DHCPDManager/List", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DHCPDManagerServer is the server API for DHCPDManager service.
 type DHCPDManagerServer interface {
-	Create(context.Context, *DHCPDManagerCreateArgs) (*DHCPDManagerCreateReply, error)
+	Create(context.Context, *DHCPD) (*DHCPDManagerCreateReply, error)
+	List(context.Context, *DHCPDManagerListArgs) (*DHCPDManagerListReply, error)
 }
 
 // UnimplementedDHCPDManagerServer can be embedded to have forward compatible implementations.
 type UnimplementedDHCPDManagerServer struct {
 }
 
-func (*UnimplementedDHCPDManagerServer) Create(ctx context.Context, req *DHCPDManagerCreateArgs) (*DHCPDManagerCreateReply, error) {
+func (*UnimplementedDHCPDManagerServer) Create(ctx context.Context, req *DHCPD) (*DHCPDManagerCreateReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (*UnimplementedDHCPDManagerServer) List(ctx context.Context, req *DHCPDManagerListArgs) (*DHCPDManagerListReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
 }
 
 func RegisterDHCPDManagerServer(s *grpc.Server, srv DHCPDManagerServer) {
@@ -291,7 +437,7 @@ func RegisterDHCPDManagerServer(s *grpc.Server, srv DHCPDManagerServer) {
 }
 
 func _DHCPDManager_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DHCPDManagerCreateArgs)
+	in := new(DHCPD)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -303,7 +449,25 @@ func _DHCPDManager_Create_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/godhcpd.DHCPDManager/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DHCPDManagerServer).Create(ctx, req.(*DHCPDManagerCreateArgs))
+		return srv.(DHCPDManagerServer).Create(ctx, req.(*DHCPD))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DHCPDManager_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DHCPDManagerListArgs)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DHCPDManagerServer).List(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/godhcpd.DHCPDManager/List",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DHCPDManagerServer).List(ctx, req.(*DHCPDManagerListArgs))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -315,6 +479,10 @@ var _DHCPDManager_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _DHCPDManager_Create_Handler,
+		},
+		{
+			MethodName: "List",
+			Handler:    _DHCPDManager_List_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
