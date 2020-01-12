@@ -1,4 +1,4 @@
-dhcp:
+dhcpd:
   device: edge0
   subnets:
     - netmask: 255.255.255.0
