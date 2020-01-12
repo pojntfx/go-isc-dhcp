@@ -4,10 +4,10 @@ package godhcpd;
 
 // DHCPDManager manages DHCP servers.
 service DHCPDManager {
-  rpc Create(DHCPD) returns (DHCPDManagerCreateReply) {};
+  rpc Create(DHCPD) returns (DHCPDManagedId) {};
   rpc List(DHCPDManagerListArgs) returns (DHCPDManagerListReply) {};
-  rpc Get(DHCPDManagerGetArgs) returns (DHCPDManaged) {};
-  // rpc Delete(DHCPDManagerDeleteArgs) returns (DHCPDManagerDeleteReply) {};
+  rpc Get(DHCPDManagedId) returns (DHCPDManaged) {};
+  rpc Delete(DHCPDManagedId) returns (DHCPDManagedId) {};
 }
 
 message DHCPD {
@@ -34,8 +34,6 @@ message DHCPDManaged {
 
 message DHCPDManagerListArgs {}
 
-message DHCPDManagerGetArgs { string Id = 1; }
-
-message DHCPDManagerCreateReply { string Id = 1; }
+message DHCPDManagedId { string Id = 1; }
 
 message DHCPDManagerListReply { repeated DHCPDManaged DHCPDsManaged = 1; }

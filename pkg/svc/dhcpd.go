@@ -48,7 +48,7 @@ func (m *DHCPDManager) getReplyDHCPDManagerFromDHCPDManaged(id string, DHCPD *wo
 }
 
 // Create creates a dhcp server.
-func (m *DHCPDManager) Create(_ context.Context, args *godhcpd.DHCPD) (*godhcpd.DHCPDManagerCreateReply, error) {
+func (m *DHCPDManager) Create(_ context.Context, args *godhcpd.DHCPD) (*godhcpd.DHCPDManagedId, error) {
 	id := uuid.NewV4().String()
 
 	subnets := args.GetSubnets()
@@ -105,7 +105,7 @@ func (m *DHCPDManager) Create(_ context.Context, args *godhcpd.DHCPD) (*godhcpd.
 
 	m.DHCPDsManaged[id] = &dhcpd
 
-	return &godhcpd.DHCPDManagerCreateReply{
+	return &godhcpd.DHCPDManagedId{
 		Id: id,
 	}, nil
 }
@@ -126,7 +126,7 @@ func (m *DHCPDManager) List(_ context.Context, args *godhcpd.DHCPDManagerListArg
 }
 
 // Get gets one of the managed dhcp servers.
-func (m *DHCPDManager) Get(_ context.Context, args *godhcpd.DHCPDManagerGetArgs) (*godhcpd.DHCPDManaged, error) {
+func (m *DHCPDManager) Get(_ context.Context, args *godhcpd.DHCPDManagedId) (*godhcpd.DHCPDManaged, error) {
 	log.Info("Getting dhcp server")
 
 	var DHCPDManaged *godhcpd.DHCPDManaged
@@ -147,6 +147,43 @@ func (m *DHCPDManager) Get(_ context.Context, args *godhcpd.DHCPDManagerGetArgs)
 	log.Error(msg)
 
 	return nil, status.Errorf(codes.NotFound, msg)
+}
+
+// Delete deletes a dhcp server.
+func (m *DHCPDManager) Delete(_ context.Context, args *godhcpd.DHCPDManagedId) (*godhcpd.DHCPDManagedId, error) {
+	id := args.GetId()
+
+	DHCPD := m.DHCPDsManaged[id]
+	if DHCPD == nil {
+		msg := "dhcp server not found"
+
+		log.Error(msg)
+
+		return nil, status.Errorf(codes.NotFound, msg)
+	}
+
+	log.Info("Stopping dhcp server")
+
+	// Only stop; cleanup in interrupt handler
+	if err := DHCPD.DisableAutoRestart(); err != nil { // Manually disable auto restart; disables crash recovery even if process is not running
+		log.Error(err.Error())
+
+		return nil, status.Errorf(codes.Unknown, err.Error())
+	}
+
+	if DHCPD.IsRunning() {
+		if err := DHCPD.Stop(); err != nil { // Stop is sync, so no need to `.Wait()`
+			log.Error(err.Error())
+
+			return nil, status.Errorf(codes.Unknown, err.Error())
+		}
+	}
+
+	delete(m.DHCPDsManaged, id)
+
+	return &godhcpd.DHCPDManagedId{
+		Id: id,
+	}, nil
 }
 
 // Extract extracts the ISC DHCP server binary.
