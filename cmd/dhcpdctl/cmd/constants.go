@@ -6,4 +6,5 @@ const (
 	serverHostPortKey = keyPrefix + "serverHostPort"
 	configFileKey     = keyPrefix + "configFile"
 	deviceKey         = keyPrefix + "device"
+	subnetsKey        = keyPrefix + "subnets"
 )
