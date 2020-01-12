@@ -91,6 +91,16 @@ https://pojntfx.github.io/godhcpd/`,
 				}
 			}
 
+			for _, DHCPD := range DHCPDService.DHCPDsManaged {
+				if err := DHCPD.Cleanup(); err != nil {
+					log.Fatal(msg, rz.Err(err))
+				}
+			}
+
+			if err := DHCPDService.Cleanup(); err != nil {
+				log.Fatal(msg, rz.Err(err))
+			}
+
 			server.GracefulStop()
 		}()
 

@@ -110,3 +110,8 @@ func (m *DHCPDManager) Extract() error {
 
 	return nil
 }
+
+// Cleanup deletes the extracted ISC DHCP server binary.
+func (m *DHCPDManager) Cleanup() error {
+	return os.Remove(m.BinaryDir)
+}
