@@ -2,6 +2,7 @@ package workers
 
 import (
 	"fmt"
+	"github.com/pojntfx/godhcpd/pkg/utils"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -10,15 +11,14 @@ import (
 
 // DHCPD is a DHCP server.
 type DHCPD struct {
-	Subnets                []Subnet
-	BinaryDir              string
-	ID                     string
-	StateDir               string
-	Device                 string
-	configFileDir          string
-	leasesFileDir          string
-	instance               *exec.Cmd
-	isScheduledForDeletion bool
+	utils.ProcessWorker
+	Subnets       []Subnet
+	BinaryDir     string
+	ID            string
+	StateDir      string
+	Device        string
+	configFileDir string
+	leasesFileDir string
 }
 
 // Subnet is a DHCP subnet.
@@ -73,7 +73,7 @@ func (d *DHCPD) Configure() error {
 
 // Start starts the the DHCP server.
 func (d *DHCPD) Start() error {
-	d.isScheduledForDeletion = false
+	d.ScheduledForDeletion = false
 
 	command := exec.Command(d.BinaryDir, "-f", "-cf", d.configFileDir, "-lf", d.leasesFileDir, d.Device)
 
@@ -82,51 +82,9 @@ func (d *DHCPD) Start() error {
 
 	command.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 
-	d.instance = command
+	d.Instance = command
 
 	return command.Start()
-}
-
-// Wait waits for the DHCP server to stop.
-func (d *DHCPD) Wait() error {
-	_, err := d.instance.Process.Wait()
-
-	return err
-}
-
-// DisableAutoRestart disables the auto restart if the DHCP server exits.
-func (d *DHCPD) DisableAutoRestart() error {
-	d.isScheduledForDeletion = true
-
-	return nil
-}
-
-// Stop stops the DHCP server.
-func (d *DHCPD) Stop() error {
-	if err := d.DisableAutoRestart(); err != nil {
-		return err
-	}
-
-	processGroupID, err := syscall.Getpgid(d.instance.Process.Pid)
-	if err != nil {
-		return err
-	}
-
-	if err := syscall.Kill(processGroupID, syscall.SIGKILL); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// IsScheduledForDeletion returns true if the DHCP server is scheduled for deletion.
-func (d *DHCPD) IsScheduledForDeletion() bool {
-	return d.isScheduledForDeletion
-}
-
-// IsRunning returns true if the DHCP server is still running.
-func (d *DHCPD) IsRunning() bool {
-	return d.instance.Process != nil
 }
 
 // Cleanup deletes the state of the DHCP server.
