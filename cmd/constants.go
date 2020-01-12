@@ -1,7 +1,8 @@
 package cmd
 
 const (
-	DHCPDDHostPortDefault = "localhost:1240" // DHCPDDHostPortDefault is the default Host:port that of `dhcpdd`.
+	DHCPDDHostPortDefault    = "localhost:1240" // DHCPDDHostPortDefault is the default Host:port of `dhcpdd`.
+	DHClientDHostPortDefault = "localhost:1241" // DHClientDHostPortDefault is the default Host:port of `dhclient`.
 )
 
 const (
