@@ -115,7 +115,6 @@ func (m *DHCPDManager) List(_ context.Context, args *godhcpd.DHCPDManagerListArg
 	log.Info("Listing dhcp servers")
 
 	var DHCPDsManaged []*godhcpd.DHCPDManaged
-
 	for id, DHCPD := range m.DHCPDsManaged {
 		DHCPDsManaged = append(DHCPDsManaged, m.getReplyDHCPDManagerFromDHCPDManaged(id, DHCPD))
 	}

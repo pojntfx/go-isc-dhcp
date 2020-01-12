@@ -58,6 +58,23 @@ func (m *DHClientManager) Create(_ context.Context, args *godhcpd.DHClient) (*go
 	}, nil
 }
 
+// List lists the managed dhcp clients.
+func (m *DHClientManager) List(_ context.Context, args *godhcpd.DHClientManagerListArgs) (*godhcpd.DHClientManagerListReply, error) {
+	log.Info("Listing dhcp clients")
+
+	var DHClients []*godhcpd.DHClientManaged
+	for id, DHClient := range m.DHClientsManaged {
+		DHClients = append(DHClients, &godhcpd.DHClientManaged{
+			Id:     id,
+			Device: DHClient.Device,
+		})
+	}
+
+	return &godhcpd.DHClientManagerListReply{
+		DHClientsManaged: DHClients,
+	}, nil
+}
+
 // Extract extracts the ISC DHCP client binary.
 func (m *DHClientManager) Extract() error {
 	statikFS, err := fs.New()
