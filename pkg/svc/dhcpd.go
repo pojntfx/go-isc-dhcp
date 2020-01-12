@@ -25,6 +25,28 @@ type DHCPDManager struct {
 	DHCPDsManaged map[string]*workers.DHCPD
 }
 
+func (m *DHCPDManager) getReplyDHCPDManagerFromDHCPDManaged(id string, DHCPD *workers.DHCPD) *godhcpd.DHCPDManaged {
+	var subnetsForReply []*godhcpd.Subnet
+	for _, subnet := range DHCPD.Subnets {
+		subnetForReply := &godhcpd.Subnet{
+			Network: subnet.Network,
+			Netmask: subnet.Netmask,
+			Range: &godhcpd.Range{
+				Start: subnet.Range.Start,
+				End:   subnet.Range.End,
+			},
+		}
+
+		subnetsForReply = append(subnetsForReply, subnetForReply)
+	}
+
+	return &godhcpd.DHCPDManaged{
+		Id:      id,
+		Device:  DHCPD.Device,
+		Subnets: subnetsForReply,
+	}
+}
+
 // Create creates a dhcp server.
 func (m *DHCPDManager) Create(_ context.Context, args *godhcpd.DHCPD) (*godhcpd.DHCPDManagerCreateReply, error) {
 	id := uuid.NewV4().String()
@@ -95,32 +117,36 @@ func (m *DHCPDManager) List(_ context.Context, args *godhcpd.DHCPDManagerListArg
 	var DHCPDsManaged []*godhcpd.DHCPDManaged
 
 	for id, DHCPD := range m.DHCPDsManaged {
-		var subnetsForReply []*godhcpd.Subnet
-		for _, subnet := range DHCPD.Subnets {
-			subnetForReply := &godhcpd.Subnet{
-				Network: subnet.Network,
-				Netmask: subnet.Netmask,
-				Range: &godhcpd.Range{
-					Start: subnet.Range.Start,
-					End:   subnet.Range.End,
-				},
-			}
-
-			subnetsForReply = append(subnetsForReply, subnetForReply)
-		}
-
-		DHCPDManaged := godhcpd.DHCPDManaged{
-			Id:      id,
-			Device:  DHCPD.Device,
-			Subnets: subnetsForReply,
-		}
-
-		DHCPDsManaged = append(DHCPDsManaged, &DHCPDManaged)
+		DHCPDsManaged = append(DHCPDsManaged, m.getReplyDHCPDManagerFromDHCPDManaged(id, DHCPD))
 	}
 
 	return &godhcpd.DHCPDManagerListReply{
 		DHCPDsManaged: DHCPDsManaged,
 	}, nil
+}
+
+// Get gets one of the managed dhcp servers.
+func (m *DHCPDManager) Get(_ context.Context, args *godhcpd.DHCPDManagerGetArgs) (*godhcpd.DHCPDManaged, error) {
+	log.Info("Getting dhcp server")
+
+	var DHCPDManaged *godhcpd.DHCPDManaged
+
+	for id, DHCPD := range m.DHCPDsManaged {
+		if id == args.GetId() {
+			DHCPDManaged = m.getReplyDHCPDManagerFromDHCPDManaged(id, DHCPD)
+			break
+		}
+	}
+
+	if DHCPDManaged != nil {
+		return DHCPDManaged, nil
+	}
+
+	msg := "dhcp server not not found"
+
+	log.Error(msg)
+
+	return nil, status.Errorf(codes.NotFound, msg)
 }
 
 // Extract extracts the ISC DHCP server binary.
