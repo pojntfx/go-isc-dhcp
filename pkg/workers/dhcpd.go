@@ -10,14 +10,15 @@ import (
 
 // DHCPD is a DHCP server.
 type DHCPD struct {
-	Subnets       []Subnet
-	BinaryDir     string
-	ID            string
-	StateDir      string
-	Device        string
-	configFileDir string
-	leasesFileDir string
-	instance      *exec.Cmd
+	Subnets                []Subnet
+	BinaryDir              string
+	ID                     string
+	StateDir               string
+	Device                 string
+	configFileDir          string
+	leasesFileDir          string
+	instance               *exec.Cmd
+	isScheduledForDeletion bool
 }
 
 // Subnet is a DHCP subnet.
@@ -72,6 +73,8 @@ func (d *DHCPD) Configure() error {
 
 // Start starts the the DHCP server.
 func (d *DHCPD) Start() error {
+	d.isScheduledForDeletion = false
+
 	command := exec.Command(d.BinaryDir, "-f", "-cf", d.configFileDir, "-lf", d.leasesFileDir, d.Device)
 
 	command.Stdout = os.Stdout
@@ -91,18 +94,39 @@ func (d *DHCPD) Wait() error {
 	return err
 }
 
+// DisableAutoRestart disables the auto restart if the DHCP server exits.
+func (d *DHCPD) DisableAutoRestart() error {
+	d.isScheduledForDeletion = true
+
+	return nil
+}
+
 // Stop stops the DHCP server.
 func (d *DHCPD) Stop() error {
+	if err := d.DisableAutoRestart(); err != nil {
+		return err
+	}
+
 	processGroupID, err := syscall.Getpgid(d.instance.Process.Pid)
 	if err != nil {
 		return err
 	}
 
-	if err := syscall.Kill(-processGroupID, syscall.SIGKILL); err != nil {
+	if err := syscall.Kill(processGroupID, syscall.SIGKILL); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+// IsScheduledForDeletion returns true if the DHCP server is scheduled for deletion.
+func (d *DHCPD) IsScheduledForDeletion() bool {
+	return d.isScheduledForDeletion
+}
+
+// IsRunning returns true if the DHCP server is still running.
+func (d *DHCPD) IsRunning() bool {
+	return d.instance.Process != nil
 }
 
 // Cleanup deletes the state of the DHCP server.

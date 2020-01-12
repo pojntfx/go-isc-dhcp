@@ -63,14 +63,20 @@ func (m *DHCPDManager) Create(_ context.Context, args *godhcpd.DHCPD) (*godhcpd.
 	go func(dhcpd *workers.DHCPD) {
 		log.Info("Starting dhcp server")
 
+		_ = dhcpd.Wait()
+
 		// Keep the dhcp server running
 		for {
-			_ = dhcpd.Wait()
+			if !dhcpd.IsScheduledForDeletion() {
+				log.Info("Restarting dhcp server")
 
-			log.Info("Restarting dhcp server")
+				if err := dhcpd.Start(); err != nil {
+					log.Error(err.Error())
+				}
 
-			if err := dhcpd.Start(); err != nil {
-				log.Error(err.Error())
+				_ = dhcpd.Wait()
+			} else {
+				break
 			}
 		}
 	}(&dhcpd)
