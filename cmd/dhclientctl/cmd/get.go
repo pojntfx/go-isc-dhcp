@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/ghodss/yaml"
 	"github.com/gosuri/uitable"
-	constants "github.com/pojntfx/godhcpd/cmd"
-	godhcpd "github.com/pojntfx/godhcpd/pkg/proto/generated"
+	constants "github.com/pojntfx/go-isc-dhcp/cmd"
+	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gitlab.com/bloom42/libs/rz-go"
@@ -25,13 +25,13 @@ var getCmd = &cobra.Command{
 		}
 		defer conn.Close()
 
-		client := godhcpd.NewDHClientManagerClient(conn)
+		client := goISCDHCP.NewDHClientManagerClient(conn)
 
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
 		if len(args) < 1 {
-			response, err := client.List(ctx, &godhcpd.DHClientManagerListArgs{})
+			response, err := client.List(ctx, &goISCDHCP.DHClientManagerListArgs{})
 			if err != nil {
 				return err
 			}
@@ -52,7 +52,7 @@ var getCmd = &cobra.Command{
 			return nil
 		}
 
-		response, err := client.Get(ctx, &godhcpd.DHClientManagedId{
+		response, err := client.Get(ctx, &goISCDHCP.DHClientManagedId{
 			Id: args[0],
 		})
 		if err != nil {
@@ -75,7 +75,7 @@ func init() {
 		serverHostPortFlag string
 	)
 
-	getCmd.PersistentFlags().StringVarP(&serverHostPortFlag, serverHostPortKey, "s", constants.DHClientDHostPortDefault, "Host:port of the godhcpd server to use.")
+	getCmd.PersistentFlags().StringVarP(&serverHostPortFlag, serverHostPortKey, "s", constants.DHClientDHostPortDefault, "Host:port of the go-isc-dhcp server to use.")
 
 	if err := viper.BindPFlags(getCmd.PersistentFlags()); err != nil {
 		log.Fatal(constants.CouldNotBindFlagsErrorMessage, rz.Err(err))

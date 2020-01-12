@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package godhcpd;
+package goISCDHCP;
 
-// DHCPDManager manages DHCP servers.
+// DHCPDManager manages dhcp servers.
 service DHCPDManager {
   rpc Create(DHCPD) returns (DHCPDManagedId) {};
   rpc List(DHCPDManagerListArgs) returns (DHCPDManagerListReply) {};

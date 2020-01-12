@@ -5,9 +5,9 @@ package svc
 
 import (
 	"context"
-	godhcpd "github.com/pojntfx/godhcpd/pkg/proto/generated"
-	_ "github.com/pojntfx/godhcpd/pkg/svc/statik" // Embedded ISC DHCP server binary
-	"github.com/pojntfx/godhcpd/pkg/workers"
+	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
+	_ "github.com/pojntfx/go-isc-dhcp/pkg/svc/statik" // Embedded ISC DHCP server binary
+	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
 	"github.com/rakyll/statik/fs"
 	uuid "github.com/satori/go.uuid"
 	"gitlab.com/bloom42/libs/rz-go/log"
@@ -19,19 +19,19 @@ import (
 
 // DHCPDManager manages dhcp servers.
 type DHCPDManager struct {
-	godhcpd.UnimplementedDHCPDManagerServer
+	goISCDHCP.UnimplementedDHCPDManagerServer
 	BinaryDir     string
 	StateDir      string
 	DHCPDsManaged map[string]*workers.DHCPD
 }
 
-func (m *DHCPDManager) getReplyDHCPDManagerFromDHCPDManaged(id string, DHCPD *workers.DHCPD) *godhcpd.DHCPDManaged {
-	var subnetsForReply []*godhcpd.Subnet
+func (m *DHCPDManager) getReplyDHCPDManagerFromDHCPDManaged(id string, DHCPD *workers.DHCPD) *goISCDHCP.DHCPDManaged {
+	var subnetsForReply []*goISCDHCP.Subnet
 	for _, subnet := range DHCPD.Subnets {
-		subnetForReply := &godhcpd.Subnet{
+		subnetForReply := &goISCDHCP.Subnet{
 			Network: subnet.Network,
 			Netmask: subnet.Netmask,
-			Range: &godhcpd.Range{
+			Range: &goISCDHCP.Range{
 				Start: subnet.Range.Start,
 				End:   subnet.Range.End,
 			},
@@ -40,7 +40,7 @@ func (m *DHCPDManager) getReplyDHCPDManagerFromDHCPDManaged(id string, DHCPD *wo
 		subnetsForReply = append(subnetsForReply, subnetForReply)
 	}
 
-	return &godhcpd.DHCPDManaged{
+	return &goISCDHCP.DHCPDManaged{
 		Id:      id,
 		Device:  DHCPD.Device,
 		Subnets: subnetsForReply,
@@ -48,7 +48,7 @@ func (m *DHCPDManager) getReplyDHCPDManagerFromDHCPDManaged(id string, DHCPD *wo
 }
 
 // Create creates a dhcp server.
-func (m *DHCPDManager) Create(_ context.Context, args *godhcpd.DHCPD) (*godhcpd.DHCPDManagedId, error) {
+func (m *DHCPDManager) Create(_ context.Context, args *goISCDHCP.DHCPD) (*goISCDHCP.DHCPDManagedId, error) {
 	id := uuid.NewV4().String()
 
 	subnets := args.GetSubnets()
@@ -105,30 +105,30 @@ func (m *DHCPDManager) Create(_ context.Context, args *godhcpd.DHCPD) (*godhcpd.
 
 	m.DHCPDsManaged[id] = &dhcpd
 
-	return &godhcpd.DHCPDManagedId{
+	return &goISCDHCP.DHCPDManagedId{
 		Id: id,
 	}, nil
 }
 
 // List lists the managed dhcp servers.
-func (m *DHCPDManager) List(_ context.Context, args *godhcpd.DHCPDManagerListArgs) (*godhcpd.DHCPDManagerListReply, error) {
+func (m *DHCPDManager) List(_ context.Context, args *goISCDHCP.DHCPDManagerListArgs) (*goISCDHCP.DHCPDManagerListReply, error) {
 	log.Info("Listing dhcp servers")
 
-	var DHCPDsManaged []*godhcpd.DHCPDManaged
+	var DHCPDsManaged []*goISCDHCP.DHCPDManaged
 	for id, DHCPD := range m.DHCPDsManaged {
 		DHCPDsManaged = append(DHCPDsManaged, m.getReplyDHCPDManagerFromDHCPDManaged(id, DHCPD))
 	}
 
-	return &godhcpd.DHCPDManagerListReply{
+	return &goISCDHCP.DHCPDManagerListReply{
 		DHCPDsManaged: DHCPDsManaged,
 	}, nil
 }
 
 // Get gets one of the managed dhcp servers.
-func (m *DHCPDManager) Get(_ context.Context, args *godhcpd.DHCPDManagedId) (*godhcpd.DHCPDManaged, error) {
+func (m *DHCPDManager) Get(_ context.Context, args *goISCDHCP.DHCPDManagedId) (*goISCDHCP.DHCPDManaged, error) {
 	log.Info("Getting dhcp server")
 
-	var DHCPDManaged *godhcpd.DHCPDManaged
+	var DHCPDManaged *goISCDHCP.DHCPDManaged
 
 	for id, DHCPD := range m.DHCPDsManaged {
 		if id == args.GetId() {
@@ -149,7 +149,7 @@ func (m *DHCPDManager) Get(_ context.Context, args *godhcpd.DHCPDManagedId) (*go
 }
 
 // Delete deletes a dhcp server.
-func (m *DHCPDManager) Delete(_ context.Context, args *godhcpd.DHCPDManagedId) (*godhcpd.DHCPDManagedId, error) {
+func (m *DHCPDManager) Delete(_ context.Context, args *goISCDHCP.DHCPDManagedId) (*goISCDHCP.DHCPDManagedId, error) {
 	id := args.GetId()
 
 	DHCPD := m.DHCPDsManaged[id]
@@ -180,7 +180,7 @@ func (m *DHCPDManager) Delete(_ context.Context, args *godhcpd.DHCPDManagedId) (
 
 	delete(m.DHCPDsManaged, id)
 
-	return &godhcpd.DHCPDManagedId{
+	return &goISCDHCP.DHCPDManagedId{
 		Id: id,
 	}, nil
 }

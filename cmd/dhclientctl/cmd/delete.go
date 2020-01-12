@@ -3,8 +3,8 @@ package cmd
 import (
 	"context"
 	"fmt"
-	constants "github.com/pojntfx/godhcpd/cmd"
-	godhcpd "github.com/pojntfx/godhcpd/pkg/proto/generated"
+	constants "github.com/pojntfx/go-isc-dhcp/cmd"
+	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gitlab.com/bloom42/libs/rz-go"
@@ -25,7 +25,7 @@ var deleteCmd = &cobra.Command{
 		}
 		defer conn.Close()
 
-		client := godhcpd.NewDHClientManagerClient(conn)
+		client := goISCDHCP.NewDHClientManagerClient(conn)
 
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
@@ -36,7 +36,7 @@ var deleteCmd = &cobra.Command{
 			wg.Add(1)
 
 			go func(id string, wg *sync.WaitGroup) {
-				response, err := client.Delete(ctx, &godhcpd.DHClientManagedId{
+				response, err := client.Delete(ctx, &goISCDHCP.DHClientManagedId{
 					Id: id,
 				})
 				if err != nil {
@@ -64,7 +64,7 @@ func init() {
 		serverHostPortFlag string
 	)
 
-	deleteCmd.PersistentFlags().StringVarP(&serverHostPortFlag, serverHostPortKey, "s", constants.DHClientDHostPortDefault, "Host:port of the godhcpd server to use.")
+	deleteCmd.PersistentFlags().StringVarP(&serverHostPortFlag, serverHostPortKey, "s", constants.DHClientDHostPortDefault, "Host:port of the go-isc-dhcp server to use.")
 
 	if err := viper.BindPFlags(deleteCmd.PersistentFlags()); err != nil {
 		log.Fatal(constants.CouldNotBindFlagsErrorMessage, rz.Err(err))

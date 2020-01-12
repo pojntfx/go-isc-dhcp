@@ -1,7 +1,7 @@
 package workers
 
 import (
-	"github.com/pojntfx/godhcpd/pkg/utils"
+	"github.com/pojntfx/go-isc-dhcp/pkg/utils"
 	"os"
 	"os/exec"
 	"syscall"

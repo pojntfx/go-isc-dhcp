@@ -3,8 +3,8 @@ package cmd
 import (
 	"context"
 	"fmt"
-	constants "github.com/pojntfx/godhcpd/cmd"
-	godhcpd "github.com/pojntfx/godhcpd/pkg/proto/generated"
+	constants "github.com/pojntfx/go-isc-dhcp/cmd"
+	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gitlab.com/bloom42/libs/rz-go"
@@ -31,12 +31,12 @@ var applyCmd = &cobra.Command{
 		}
 		defer conn.Close()
 
-		client := godhcpd.NewDHClientManagerClient(conn)
+		client := goISCDHCP.NewDHClientManagerClient(conn)
 
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		response, err := client.Create(ctx, &godhcpd.DHClient{
+		response, err := client.Create(ctx, &goISCDHCP.DHClient{
 			Device: viper.GetString(deviceKey),
 		})
 		if err != nil {

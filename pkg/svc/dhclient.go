@@ -2,8 +2,8 @@ package svc
 
 import (
 	"context"
-	godhcpd "github.com/pojntfx/godhcpd/pkg/proto/generated"
-	"github.com/pojntfx/godhcpd/pkg/workers"
+	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
+	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
 	"github.com/rakyll/statik/fs"
 	uuid "github.com/satori/go.uuid"
 	"gitlab.com/bloom42/libs/rz-go/log"
@@ -14,13 +14,13 @@ import (
 
 // DHClientManager manages dhcp clients.
 type DHClientManager struct {
-	godhcpd.UnimplementedDHClientManagerServer
+	goISCDHCP.UnimplementedDHClientManagerServer
 	BinaryDir        string
 	DHClientsManaged map[string]*workers.DHClient
 }
 
 // Create creates a dhcp client.
-func (m *DHClientManager) Create(_ context.Context, args *godhcpd.DHClient) (*godhcpd.DHClientManagedId, error) {
+func (m *DHClientManager) Create(_ context.Context, args *goISCDHCP.DHClient) (*goISCDHCP.DHClientManagedId, error) {
 	id := uuid.NewV4().String()
 
 	dhcpd := workers.DHClient{
@@ -55,37 +55,37 @@ func (m *DHClientManager) Create(_ context.Context, args *godhcpd.DHClient) (*go
 
 	m.DHClientsManaged[id] = &dhcpd
 
-	return &godhcpd.DHClientManagedId{
+	return &goISCDHCP.DHClientManagedId{
 		Id: id,
 	}, nil
 }
 
 // List lists the managed dhcp clients.
-func (m *DHClientManager) List(_ context.Context, args *godhcpd.DHClientManagerListArgs) (*godhcpd.DHClientManagerListReply, error) {
+func (m *DHClientManager) List(_ context.Context, args *goISCDHCP.DHClientManagerListArgs) (*goISCDHCP.DHClientManagerListReply, error) {
 	log.Info("Listing dhcp clients")
 
-	var DHClients []*godhcpd.DHClientManaged
+	var DHClients []*goISCDHCP.DHClientManaged
 	for id, DHClient := range m.DHClientsManaged {
-		DHClients = append(DHClients, &godhcpd.DHClientManaged{
+		DHClients = append(DHClients, &goISCDHCP.DHClientManaged{
 			Id:     id,
 			Device: DHClient.Device,
 		})
 	}
 
-	return &godhcpd.DHClientManagerListReply{
+	return &goISCDHCP.DHClientManagerListReply{
 		DHClientsManaged: DHClients,
 	}, nil
 }
 
 // Get gets one of the managed dhcp clients.
-func (m *DHClientManager) Get(_ context.Context, args *godhcpd.DHClientManagedId) (*godhcpd.DHClientManaged, error) {
+func (m *DHClientManager) Get(_ context.Context, args *goISCDHCP.DHClientManagedId) (*goISCDHCP.DHClientManaged, error) {
 	log.Info("Getting dhcp client")
 
-	var DHClientManaged *godhcpd.DHClientManaged
+	var DHClientManaged *goISCDHCP.DHClientManaged
 
 	for id, DHClient := range m.DHClientsManaged {
 		if id == args.GetId() {
-			DHClientManaged = &godhcpd.DHClientManaged{
+			DHClientManaged = &goISCDHCP.DHClientManaged{
 				Id:     id,
 				Device: DHClient.Device,
 			}
@@ -105,7 +105,7 @@ func (m *DHClientManager) Get(_ context.Context, args *godhcpd.DHClientManagedId
 }
 
 // Delete deletes a dhcp client.
-func (m *DHClientManager) Delete(_ context.Context, args *godhcpd.DHClientManagedId) (*godhcpd.DHClientManagedId, error) {
+func (m *DHClientManager) Delete(_ context.Context, args *goISCDHCP.DHClientManagedId) (*goISCDHCP.DHClientManagedId, error) {
 	id := args.GetId()
 
 	DHClient := m.DHClientsManaged[id]
@@ -135,7 +135,7 @@ func (m *DHClientManager) Delete(_ context.Context, args *godhcpd.DHClientManage
 
 	delete(m.DHClientsManaged, id)
 
-	return &godhcpd.DHClientManagedId{
+	return &goISCDHCP.DHClientManagedId{
 		Id: id,
 	}, nil
 }
