@@ -1,15 +1,15 @@
-# godhcpd
+# go-isc-dhcp
 
 Management daemons and CLIs for the ISC DHCP server and client.
 
 ## Overview
 
-`godhcpd` is a collection of management daemons and CLIs for the ISC DHCP server and client. The ISC DHCP server and client are built of two main components:
+`go-isc-dhcp` is a collection of management daemons and CLIs for the ISC DHCP server and client. The ISC DHCP server and client are built of two main components:
 
 - `dhcpd`, a DHCP server
 - `dhclient`, a DHCP client
 
-In a similar way, `godhcpd` is built of multiple components. The components are:
+In a similar way, `go-isc-dhcp` is built of multiple components. The components are:
 
 - `dhcpdd`, an ISC DHCP server management daemon with a gRPC interface
 - `dhclientd`, an ISC DHCP client management daemon with a gRPC interface
@@ -20,7 +20,7 @@ In a similar way, `godhcpd` is built of multiple components. The components are:
 
 ## Installation
 
-A Go package [is available](https://godoc.org/github.com/pojntfx/godhcpd). In order to use it, you have to `go generate` it first.
+A Go package [is available](https://godoc.org/github.com/pojntfx/go-isc-dhcp). In order to use it, you have to `go generate` it first.
 
 ## Usage
 
@@ -37,7 +37,7 @@ You may also set the flags by setting env variables in the format `DHCPDD_[FLAG]
 dhcpdd is the ISC DHCP server management daemon.
 
 Find more information at:
-https://pojntfx.github.io/godhcpd/
+https://pojntfx.github.io/go-isc-dhcp/
 
 Usage:
   dhcpdd [flags]
@@ -57,7 +57,7 @@ You may also set the flags by setting env variables in the format `DHCLIENTD_[FL
 dhclientd is the ISC DHCP client management daemon.
 
 Find more information at:
-https://pojntfx.github.io/godhcpd/
+https://pojntfx.github.io/go-isc-dhcp/
 
 Usage:
   dhclientd [flags]
@@ -81,7 +81,7 @@ You may also set the flags by setting env variables in the format `DHCPD_[FLAG]`
 dhcpdctl manages dhcpdd, the ISC DHCP server management daemon.
 
 Find more information at:
-https://pojntfx.github.io/godhcpd/
+https://pojntfx.github.io/go-isc-dhcp/
 
 Usage:
   dhcpdctl [command]
@@ -107,7 +107,7 @@ You may also set the flags by setting env variables in the format `DHCLIENT_[FLA
 dhclientctl manages dhclientd, the ISC DHCP client management daemon.
 
 Find more information at:
-https://pojntfx.github.io/godhcpd/
+https://pojntfx.github.io/go-isc-dhcp/
 
 Usage:
   dhclientctl [command]
@@ -126,6 +126,6 @@ Use "dhclientctl [command] --help" for more information about a command.
 
 ## License
 
-godhcpd (c) 2020 Felicitas Pojtinger
+go-isc-dhcp (c) 2020 Felicitas Pojtinger
 
 SPDX-License-Identifier: AGPL-3.0

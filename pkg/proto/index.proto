@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package godhcpd;
+package goISCDHCP;
 
 import public "dhclient.proto";
 import public "dhcpd.proto";

@@ -2,7 +2,7 @@ package workers
 
 import (
 	"fmt"
-	"github.com/pojntfx/godhcpd/pkg/utils"
+	"github.com/pojntfx/go-isc-dhcp/pkg/utils"
 	"os"
 	"os/exec"
 	"path/filepath"

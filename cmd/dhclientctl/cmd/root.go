@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Long: `dhclientctl manages dhclientd, the ISC DHCP client management daemon.
 
 Find more information at:
-https://pojntfx.github.io/godhcpd/`,
+https://pojntfx.github.io/go-isc-dhcp/`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		viper.SetEnvPrefix("dhcpd")
 		viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))

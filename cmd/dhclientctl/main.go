@@ -1,6 +1,6 @@
 package main
 
-import "github.com/pojntfx/godhcpd/cmd/dhclientctl/cmd"
+import "github.com/pojntfx/go-isc-dhcp/cmd/dhclientctl/cmd"
 
 func main() {
 	cmd.Execute()

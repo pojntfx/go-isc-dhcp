@@ -1,6 +1,6 @@
 package main
 
-import "github.com/pojntfx/godhcpd/cmd/dhcpdctl/cmd"
+import "github.com/pojntfx/go-isc-dhcp/cmd/dhcpdctl/cmd"
 
 func main() {
 	cmd.Execute()

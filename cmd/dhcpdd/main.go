@@ -1,10 +1,10 @@
 package main
 
 import (
-	constants "github.com/pojntfx/godhcpd/cmd"
-	godhcpd "github.com/pojntfx/godhcpd/pkg/proto/generated"
-	"github.com/pojntfx/godhcpd/pkg/svc"
-	"github.com/pojntfx/godhcpd/pkg/workers"
+	constants "github.com/pojntfx/go-isc-dhcp/cmd"
+	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
+	"github.com/pojntfx/go-isc-dhcp/pkg/svc"
+	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gitlab.com/bloom42/libs/rz-go"
@@ -32,7 +32,7 @@ var rootCmd = &cobra.Command{
 	Long: `dhcpdd is the ISC DHCP server management daemon.
 
 Find more information at:
-https://pojntfx.github.io/godhcpd/`,
+https://pojntfx.github.io/go-isc-dhcp/`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		viper.SetEnvPrefix("dhcpdd")
 		viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
@@ -57,11 +57,11 @@ https://pojntfx.github.io/godhcpd/`,
 
 		DHCPDService := svc.DHCPDManager{
 			BinaryDir:     binaryDir,
-			StateDir:      filepath.Join(os.TempDir(), "godhcpd", "dhcpd"),
+			StateDir:      filepath.Join(os.TempDir(), "go-isc-dhcp", "dhcpd"),
 			DHCPDsManaged: make(map[string]*workers.DHCPD),
 		}
 
-		godhcpd.RegisterDHCPDManagerServer(server, &DHCPDService)
+		goISCDHCP.RegisterDHCPDManagerServer(server, &DHCPDService)
 
 		interrupt := make(chan os.Signal, 2)
 		signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
