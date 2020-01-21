@@ -124,7 +124,7 @@ func init() {
 		hostPortFlag   string
 	)
 
-	rootCmd.PersistentFlags().StringVarP(&configFileFlag, configFileKey, "f", configFileDefault, "Configuration file to use.")
+	rootCmd.PersistentFlags().StringVarP(&configFileFlag, configFileKey, "f", configFileDefault, constants.ConfigurationFileDocs)
 	rootCmd.PersistentFlags().StringVarP(&hostPortFlag, listenHostPortKey, "l", constants.DHCPDDHostPortDefault, "TCP listen host:port.")
 
 	if err := viper.BindPFlags(rootCmd.PersistentFlags()); err != nil {
