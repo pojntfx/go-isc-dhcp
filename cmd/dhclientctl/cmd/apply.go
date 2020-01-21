@@ -56,8 +56,8 @@ func init() {
 		deviceFlag         string
 	)
 
-	applyCmd.PersistentFlags().StringVarP(&serverHostPortFlag, serverHostPortKey, "s", constants.DHClientDHostPortDefault, "Host:port of the dhclientd server to use.")
-	applyCmd.PersistentFlags().StringVarP(&configFileFlag, configFileKey, "f", configFileDefault, "Configuration file to use.")
+	applyCmd.PersistentFlags().StringVarP(&serverHostPortFlag, serverHostPortKey, "s", constants.DHClientDHostPortDefault, constants.HostPortDocs)
+	applyCmd.PersistentFlags().StringVarP(&configFileFlag, configFileKey, "f", configFileDefault, constants.ConfigurationFileDocs)
 	applyCmd.PersistentFlags().StringVarP(&deviceFlag, deviceKey, "d", "edge1", "Device to bind to.")
 
 	if err := viper.BindPFlags(applyCmd.PersistentFlags()); err != nil {

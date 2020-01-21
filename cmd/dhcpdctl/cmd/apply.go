@@ -69,8 +69,8 @@ func init() {
 		subnetsFlag        string
 	)
 
-	applyCmd.PersistentFlags().StringVarP(&serverHostPortFlag, serverHostPortKey, "s", constants.DHCPDDHostPortDefault, "Host:port of the dhcpdd server to use.")
-	applyCmd.PersistentFlags().StringVarP(&configFileFlag, configFileKey, "f", configFileDefault, "Configuration file to use.")
+	applyCmd.PersistentFlags().StringVarP(&serverHostPortFlag, serverHostPortKey, "s", constants.DHCPDDHostPortDefault, constants.HostPortDocs)
+	applyCmd.PersistentFlags().StringVarP(&configFileFlag, configFileKey, "f", configFileDefault, constants.ConfigurationFileDocs)
 	applyCmd.PersistentFlags().StringVarP(&deviceFlag, deviceKey, "d", "edge0", "Device to bind to.")
 	applyCmd.PersistentFlags().StringVarP(&subnetsFlag, subnetsKey, "n", `[
   {
