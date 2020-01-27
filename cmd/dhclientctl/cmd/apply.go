@@ -51,9 +51,7 @@ var applyCmd = &cobra.Command{
 
 func init() {
 	var (
-		serverHostPortFlag string
-		configFileFlag     string
-		deviceFlag         string
+		deviceFlag string
 	)
 
 	applyCmd.PersistentFlags().StringVarP(&serverHostPortFlag, serverHostPortKey, "s", constants.DHClientDHostPortDefault, constants.HostPortDocs)

@@ -7,3 +7,8 @@ const (
 	configFileKey     = keyPrefix + "configFile"
 	deviceKey         = keyPrefix + "device"
 )
+
+var (
+	serverHostPortFlag string
+	configFileFlag     string
+)
