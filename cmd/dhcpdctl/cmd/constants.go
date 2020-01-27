@@ -8,3 +8,8 @@ const (
 	deviceKey         = keyPrefix + "device"
 	subnetsKey        = keyPrefix + "subnets"
 )
+
+var (
+	serverHostPortFlag string
+	configFileFlag     string
+)

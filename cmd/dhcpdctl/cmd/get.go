@@ -71,10 +71,6 @@ var getCmd = &cobra.Command{
 }
 
 func init() {
-	var (
-		serverHostPortFlag string
-	)
-
 	getCmd.PersistentFlags().StringVarP(&serverHostPortFlag, serverHostPortKey, "s", constants.DHCPDDHostPortDefault, constants.HostPortDocs)
 
 	if err := viper.BindPFlags(getCmd.PersistentFlags()); err != nil {
