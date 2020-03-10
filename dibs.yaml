@@ -173,3 +173,110 @@ targets:
           unitTests: go test -v ./...
           integrationTests: .bin/binaries/dhcpdctl-darwin-amd64 --help
           start: .bin/binaries/dhcpdctl-darwin-amd64 --help
+  - name: dhclientd-linux
+    helm:
+      src: charts/dhclientd
+      dist: .bin/chart
+    dockerManifest: pojntfx/dhclientd:latest
+    platforms:
+      - identifier: linux/amd64
+        paths:
+          watch: .
+          include: (.*)\.go
+          assetInImage: /usr/local/bin/dhclientd
+          assetOut: .bin/binaries/dhclientd-linux-amd64
+          gitRepoRoot: .
+        commands:
+          generateSources: go generate ./...
+          build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientd-linux-amd64 cmd/dhclientd/main.go
+          unitTests: go test -v ./...
+          integrationTests: .bin/binaries/dhclientd-linux-amd64 --help
+          imageTests: docker run --platform linux/amd64 -e DIBS_TARGET=dhclientd-linux -e TARGETPLATFORM=linux/amd64 pojntfx/dhclientd:linux-amd64 /usr/local/bin/dhclientd --help
+          chartTests: helm install dhclientd .bin/chart/dhclientd-*.tgz && helm delete dhclientd
+          start: |
+            if [ "$DIBS_DEBUG" = "true" ]; then
+              pkill -9 dlv || true
+              pkill -9 dhclientd || true
+              .bin/binaries/dhclientd-linux-amd64 &
+              dlv attach $! --headless --listen=:31441 --api-version=2 --accept-multiclient || true
+            else
+              .bin/binaries/dhclientd-linux-amd64
+            fi
+        docker:
+          build:
+            file: Dockerfile.dhclientd
+            context: .
+            tag: pojntfx/dhclientd:linux-amd64
+          unitTests:
+            file: Dockerfile.unitTests
+            context: .
+            tag: pojntfx/dhclientd-unit-tests:linux-amd64
+          integrationTests:
+            file: Dockerfile.integrationTests
+            context: .
+            tag: pojntfx/dhclientd-integration-tests:linux-amd64
+          chartTests:
+            file: Dockerfile.chartTests
+            context: .
+            tag: pojntfx/dhclientd-chart-tests:linux-amd64
+      - identifier: linux/arm64
+        paths:
+          watch: .
+          include: (.*)\.go
+          assetInImage: /usr/local/bin/dhclientd
+          assetOut: .bin/binaries/dhclientd-linux-arm64
+          gitRepoRoot: .
+        commands:
+          generateSources: go generate ./...
+          build: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientd-linux-arm64 cmd/dhclientd/main.go
+          unitTests: go test -v ./...
+          integrationTests: .bin/binaries/dhclientd-linux-arm64 --help
+          imageTests: docker run --platform linux/arm64 -e DIBS_TARGET=dhclientd-linux -e TARGETPLATFORM=linux/arm64 pojntfx/dhclientd:linux-arm64 /usr/local/bin/dhclientd --help
+          chartTests: helm install dhclientd .bin/chart/dhclientd-*.tgz && helm delete dhclientd
+          start: |
+            if [ "$DIBS_DEBUG" = "true" ]; then
+              pkill -9 dlv || true
+              pkill -9 dhclientd || true
+              .bin/binaries/dhclientd-linux-arm64 &
+              dlv attach $! --headless --listen=:31441 --api-version=2 --accept-multiclient || true
+            else
+              .bin/binaries/dhclientd-linux-arm64
+            fi
+        docker:
+          build:
+            file: Dockerfile.dhclientd
+            context: .
+            tag: pojntfx/dhclientd:linux-arm64
+          unitTests:
+            file: Dockerfile.unitTests
+            context: .
+            tag: pojntfx/dhclientd-unit-tests:linux-arm64
+          integrationTests:
+            file: Dockerfile.integrationTests
+            context: .
+            tag: pojntfx/dhclientd-integration-tests:linux-arm64
+          chartTests:
+            file: Dockerfile.chartTests
+            context: .
+            tag: pojntfx/dhclientd-chart-tests:linux-arm64
+  - name: dhclientd-darwin
+    platforms:
+      - identifier: darwin/amd64
+        paths:
+          watch: .
+          include: (.*)\.go
+          gitRepoRoot: .
+        commands:
+          generateSources: go generate ./...
+          build: GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientd-linux-amd64 cmd/dhclientd/main.go
+          unitTests: go test -v ./...
+          integrationTests: .bin/binaries/dhclientd-darwin-amd64 --help
+          start: |
+            if [ "$DIBS_DEBUG" = "true" ]; then
+              pkill -9 dlv || true
+              pkill -9 dhclientd || true
+              .bin/binaries/dhclientd-darwin-amd64 &
+              dlv attach $! --headless --listen=:31441 --api-version=2 --accept-multiclient || true
+            else
+              .bin/binaries/dhclientd-darwin-amd64
+            fi
