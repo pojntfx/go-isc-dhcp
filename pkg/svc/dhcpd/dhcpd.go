@@ -1,12 +1,4 @@
-package svc
-
-//go:generate mkdir -p ../proto/generated
-//go:generate sh -c "protoc --go_out=paths=source_relative,plugins=grpc:../proto/generated -I=../proto ../proto/*.proto"
-//go:generate rm -rf dhcp statikDhcpd statikDhclient
-//go:generate git clone https://gitlab.isc.org/isc-projects/dhcp.git
-//go:generate sh -c "cd dhcp; ./configure; make; cd .."
-//go:generate statik -src dhcp/server -include dhcpd -p statikDhcpd
-//go:generate statik -src dhcp/client -include dhclient -p statikDhclient
+package dhcpd
 
 import (
 	"context"
@@ -14,8 +6,7 @@ import (
 	"path/filepath"
 
 	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
-	_ "github.com/pojntfx/go-isc-dhcp/pkg/svc/statikDhclient" // Embedded ISC DHCP client binary
-	_ "github.com/pojntfx/go-isc-dhcp/pkg/svc/statikDhcpd"    // Embedded ISC DHCP server binary
+	_ "github.com/pojntfx/go-isc-dhcp/pkg/svc/statikDhcpd" // Embedded ISC DHCP server binary
 	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
 	"github.com/rakyll/statik/fs"
 	uuid "github.com/satori/go.uuid"

@@ -1,10 +1,11 @@
-package svc
+package dhclient
 
 import (
 	"context"
 	"os"
 
 	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
+	_ "github.com/pojntfx/go-isc-dhcp/pkg/svc/statikDhclient" // Embedded ISC DHCP client binary
 	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
 	"github.com/rakyll/statik/fs"
 	uuid "github.com/satori/go.uuid"

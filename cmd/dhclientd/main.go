@@ -1,9 +1,16 @@
 package main
 
 import (
+	"net"
+	"os"
+	"os/signal"
+	"path/filepath"
+	"strings"
+	"syscall"
+
 	constants "github.com/pojntfx/go-isc-dhcp/cmd"
 	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
-	"github.com/pojntfx/go-isc-dhcp/pkg/svc"
+	"github.com/pojntfx/go-isc-dhcp/pkg/svc/dhclient"
 	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -11,12 +18,6 @@ import (
 	"gitlab.com/bloom42/libs/rz-go/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"net"
-	"os"
-	"os/signal"
-	"path/filepath"
-	"strings"
-	"syscall"
 )
 
 const (
@@ -55,7 +56,7 @@ https://pojntfx.github.io/go-isc-dhcp/`,
 		server := grpc.NewServer()
 		reflection.Register(server)
 
-		DHClientService := svc.DHClientManager{
+		DHClientService := dhclient.DHClientManager{
 			BinaryDir:        binaryDir,
 			DHClientsManaged: make(map[string]*workers.DHClient),
 		}
