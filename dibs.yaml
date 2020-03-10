@@ -1,5 +1,5 @@
 targets:
-  - name: linux
+  - name: dhcpdd-linux
     helm:
       src: charts/dhcpdd
       dist: .bin/chart
@@ -30,7 +30,7 @@ targets:
             fi
         docker:
           build:
-            file: Dockerfile
+            file: Dockerfile.dhcpdd
             context: .
             tag: pojntfx/dhcpdd:linux-amd64
           unitTests:
@@ -70,7 +70,7 @@ targets:
             fi
         docker:
           build:
-            file: Dockerfile
+            file: Dockerfile.dhcpdd
             context: .
             tag: pojntfx/dhcpdd:linux-arm64
           unitTests:
