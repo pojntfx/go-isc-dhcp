@@ -280,3 +280,70 @@ targets:
             else
               .bin/binaries/dhclientd-darwin-amd64
             fi
+  - name: dhclientctl-linux
+    platforms:
+      - identifier: linux/amd64
+        paths:
+          watch: .
+          include: (.*)\.go
+          assetInImage: /usr/local/bin/dhclientctl
+          assetOut: .bin/binaries/dhclientctl-linux-amd64
+          gitRepoRoot: .
+        commands:
+          generateSources: go generate ./...
+          build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientctl-linux-amd64 cmd/dhclientctl/main.go
+          unitTests: go test -v ./...
+          integrationTests: .bin/binaries/dhclientctl-linux-amd64 --help
+          start: .bin/binaries/dhclientctl-linux-amd64 --help
+        docker:
+          build:
+            file: Dockerfile.dhclientctl
+            context: .
+            tag: pojntfx/dhclientctl:linux-amd64 # Only to get the binaries from Docker
+          unitTests:
+            file: Dockerfile.unitTests
+            context: .
+            tag: pojntfx/dhclientctl-unit-tests:linux-amd64
+          integrationTests:
+            file: Dockerfile.integrationTests
+            context: .
+            tag: pojntfx/dhclientctl-integration-tests:linux-amd64
+      - identifier: linux/arm64
+        paths:
+          watch: .
+          include: (.*)\.go
+          assetInImage: /usr/local/bin/dhclientctl
+          assetOut: .bin/binaries/dhclientctl-linux-arm64
+          gitRepoRoot: .
+        commands:
+          generateSources: go generate ./...
+          build: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientctl-linux-arm64 cmd/dhclientctl/main.go
+          unitTests: go test -v ./...
+          integrationTests: .bin/binaries/dhclientctl-linux-arm64 --help
+          start: .bin/binaries/dhclientctl-linux-arm64 --help
+        docker:
+          build:
+            file: Dockerfile.dhclientctl
+            context: .
+            tag: pojntfx/dhclientctl:linux-arm64 # Only to get the binaries from Docker
+          unitTests:
+            file: Dockerfile.unitTests
+            context: .
+            tag: pojntfx/dhclientctl-unit-tests:linux-arm64
+          integrationTests:
+            file: Dockerfile.integrationTests
+            context: .
+            tag: pojntfx/dhclientctl-integration-tests:linux-arm64
+  - name: dhclientctl-darwin
+    platforms:
+      - identifier: darwin/amd64
+        paths:
+          watch: .
+          include: (.*)\.go
+          gitRepoRoot: .
+        commands:
+          generateSources: go generate ./...
+          build: GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientctl-darwin-amd64 cmd/dhclientctl/main.go
+          unitTests: go test -v ./...
+          integrationTests: .bin/binaries/dhclientctl-darwin-amd64 --help
+          start: .bin/binaries/dhclientctl-darwin-amd64 --help
