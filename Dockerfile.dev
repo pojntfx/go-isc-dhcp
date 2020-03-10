@@ -1,0 +1,25 @@
+# syntax=docker/dockerfile:experimental
+FROM --platform=$TARGETPLATFORM golang AS build
+ARG DIBS_TARGET
+ARG TARGETPLATFORM
+
+WORKDIR /app
+
+RUN apt update
+RUN apt install -y protobuf-compiler gcc make git file
+
+RUN curl -Lo /tmp/dibs https://github.com/pojntfx/dibs/releases/latest/download/dibs-linux-amd64
+RUN install /tmp/dibs /usr/local/bin
+
+ENV GO111MODULE=on
+
+RUN go get github.com/golang/protobuf/protoc-gen-go
+RUN go get github.com/rakyll/statik
+RUN go get github.com/go-delve/delve/cmd/dlv
+
+ADD . .
+
+RUN dibs -generateSources
+# Tests are disabled because there currently are none.
+# To reduce build time, automatic sources generation has also been disabled. To generate sources manually, please re-deploy manually.
+CMD dibs -dev -skipGenerateSources -skipTests

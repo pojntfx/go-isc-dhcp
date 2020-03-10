@@ -227,7 +227,9 @@ func init() {
 	proto.RegisterType((*DHClientManagerListReply)(nil), "goISCDHCP.DHClientManagerListReply")
 }
 
-func init() { proto.RegisterFile("dhclient.proto", fileDescriptor_be7a0255fd2aa76a) }
+func init() {
+	proto.RegisterFile("dhclient.proto", fileDescriptor_be7a0255fd2aa76a)
+}
 
 var fileDescriptor_be7a0255fd2aa76a = []byte{
 	// 255 bytes of a gzipped FileDescriptorProto
@@ -251,11 +253,11 @@ var fileDescriptor_be7a0255fd2aa76a = []byte{
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConn
+var _ grpc.ClientConnInterface
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // DHClientManagerClient is the client API for DHClientManager service.
 //
@@ -268,10 +270,10 @@ type DHClientManagerClient interface {
 }
 
 type dHClientManagerClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewDHClientManagerClient(cc *grpc.ClientConn) DHClientManagerClient {
+func NewDHClientManagerClient(cc grpc.ClientConnInterface) DHClientManagerClient {
 	return &dHClientManagerClient{cc}
 }
 
