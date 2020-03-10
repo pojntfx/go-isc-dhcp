@@ -1,0 +1,219 @@
+.dibsJob: &dibsJob
+  image: docker:stable
+  services:
+    - name: docker:dind
+      command:
+        - "--experimental"
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+  before_script:
+    # Install curl and tar
+    - apk add -u curl tar
+    # Install qemu-user-static
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # Install buildx
+    - curl -Lo /tmp/docker-buildx https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64
+    - mkdir -p ~/.docker/cli-plugins/
+    - install /tmp/docker-buildx ~/.docker/cli-plugins
+    - docker buildx create --name dibs
+    - docker buildx use dibs
+    - docker buildx inspect --bootstrap
+    # Install Helm
+    - curl -L https://get.helm.sh/helm-v3.1.1-linux-amd64.tar.gz | tar -zvxf - linux-amd64/helm -O >/tmp/helm
+    - install /tmp/helm /usr/local/bin
+    # Install ghr
+    - curl -L https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz | tar -zvxf - ghr_v0.13.0_linux_amd64/ghr
+    - install ghr_v0.13.0_linux_amd64/ghr /usr/local/bin
+    # Install Chart Releaser
+    - curl -L https://github.com/helm/chart-releaser/releases/download/v0.2.3/chart-releaser_0.2.3_linux_amd64.tar.gz | tar -zvxf - cr
+    - install cr /usr/local/bin
+    # Install dibs
+    - curl -Lo /tmp/dibs https://github.com/pojntfx/dibs/releases/latest/download/dibs-linux-amd64
+    - install /tmp/dibs /usr/local/bin
+    # Login to Docker Hub
+    - docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
+
+stages:
+  - dhcpdd:unitTest
+  - dhcpdctl:unitTest
+  - dhcpdd:integrationTest
+  - dhcpdctl:integrationTest
+  - dhcpdd:buildAndPushImage
+  - dhcpdd:buildAndPushManifestAndBinaries
+  - dhcpdctl:buildAndPushBinaries
+  - dhcpdd:buildAndPushChart
+
+# Unit tests
+dhcpdd:unitTestAMD64:
+  <<: *dibsJob
+  stage: dhcpdd:unitTest
+  script:
+    - dibs -unitTests -target linux -platform linux/amd64 -docker
+dhcpdd:unitTestARM64:
+  <<: *dibsJob
+  stage: dhcpdd:unitTest
+  script:
+    - dibs -unitTests -target linux -platform linux/arm64 -docker
+
+dhcpdctl:unitTestAMD64:
+  <<: *dibsJob
+  stage: dhcpdctl:unitTest
+  script:
+    - dibs -unitTests -target dhcpdctl-linux -platform linux/amd64 -docker
+dhcpdctl:unitTestARM64:
+  <<: *dibsJob
+  stage: dhcpdctl:unitTest
+  script:
+    - dibs -unitTests -target dhcpdctl-linux -platform linux/arm64 -docker
+
+# Integration tests
+dhcpdd:integrationTestAMD64:
+  <<: *dibsJob
+  stage: dhcpdd:integrationTest
+  script:
+    - dibs -integrationTests -target linux -platform linux/amd64 -docker
+dhcpdd:integrationTestARM64:
+  <<: *dibsJob
+  stage: dhcpdd:integrationTest
+  script:
+    - dibs -integrationTests -target linux -platform linux/arm64 -docker
+
+dhcpdctl:integrationTestAMD64:
+  <<: *dibsJob
+  stage: dhcpdctl:integrationTest
+  script:
+    - dibs -integrationTests -target dhcpdctl-linux -platform linux/amd64 -docker
+dhcpdctl:integrationTestARM64:
+  <<: *dibsJob
+  stage: dhcpdctl:integrationTest
+  script:
+    - dibs -integrationTests -target dhcpdctl-linux -platform linux/arm64 -docker
+
+# Image tests
+# amd64 is disabled for now due to a GitLab bug where it does not exit after being run
+#dhcpdd:imageTestsAMD64:
+#  <<: *dibsJob
+#  stage: dhcpdd:integrationTest
+#  script:
+#    - dibs -buildImage -target linux -platform linux/amd64
+#    - dibs -imageTests -target linux -platform linux/amd64
+dhcpdd:imageTestsARM64:
+  <<: *dibsJob
+  stage: dhcpdd:integrationTest
+  script:
+    - dibs -buildImage -target linux -platform linux/arm64
+    - dibs -imageTests -target linux -platform linux/arm64
+
+# Chart tests
+dhcpdd:chartTestsAMD64:
+  <<: *dibsJob
+  stage: dhcpdd:integrationTest
+  script:
+    - dibs -buildImage -target linux -platform linux/amd64
+    - dibs -buildManifest -target linux
+    - dibs -chartTests -target linux -platform linux/amd64 -docker
+dhcpdd:chartTestsARM64:
+  <<: *dibsJob
+  stage: dhcpdd:integrationTest
+  script:
+    - dibs -buildImage -target linux -platform linux/arm64
+    - dibs -buildManifest -target linux
+    - dibs -chartTests -target linux -platform linux/arm64 -docker
+
+# Build and push image
+dhcpdd:buildAndPushImageAMD64:
+  <<: *dibsJob
+  stage: dhcpdd:buildAndPushImage
+  script:
+    - dibs -buildImage -target linux -platform linux/amd64
+    - dibs -pushImage -target linux -platform linux/amd64
+  only:
+    - tags
+dhcpdd:buildAndPushImageARM64:
+  <<: *dibsJob
+  stage: dhcpdd:buildAndPushImage
+  script:
+    - dibs -buildImage -target linux -platform linux/arm64
+    - dibs -pushImage -target linux -platform linux/arm64
+  only:
+    - tags
+
+# Build and push manifest
+dhcpdd:buildAndPushManifest:
+  <<: *dibsJob
+  stage: dhcpdd:buildAndPushManifestAndBinaries
+  script:
+    - dibs -buildManifest -target linux
+    - dibs -pushManifest -target linux
+  only:
+    - tags
+
+# Build and push binaries
+dhcpdd:buildAndPushBinariesAMD64:
+  <<: *dibsJob
+  stage: dhcpdd:buildAndPushManifestAndBinaries
+  script:
+    - dibs -build -target linux -platform linux/amd64 -docker
+    - dibs -pushBinary -target linux -platform linux/amd64
+  artifacts:
+    name: dhcpdd-binaries-amd64
+    paths:
+      - .bin/binaries
+    expire_in: 1 month
+  only:
+    - tags
+dhcpdd:buildAndPushBinariesARM64:
+  <<: *dibsJob
+  stage: dhcpdd:buildAndPushManifestAndBinaries
+  script:
+    - dibs -build -target linux -platform linux/arm64 -docker
+    - dibs -pushBinary -target linux -platform linux/arm64
+  artifacts:
+    name: dhcpdd-binaries-arm64
+    paths:
+      - .bin/binaries
+    expire_in: 1 month
+  only:
+    - tags
+
+dhcpdctl:buildAndPushBinariesAMD64:
+  <<: *dibsJob
+  stage: dhcpdctl:buildAndPushBinaries
+  script:
+    - dibs -build -target dhcpdctl-linux -platform linux/amd64 -docker
+    - dibs -pushBinary -target dhcpdctl-linux -platform linux/amd64
+  artifacts:
+    name: dhcpdctl-binaries-amd64
+    paths:
+      - .bin/binaries
+    expire_in: 1 month
+  only:
+    - tags
+dhcpdctl:buildAndPushBinariesARM64:
+  <<: *dibsJob
+  stage: dhcpdctl:buildAndPushBinaries
+  script:
+    - dibs -build -target dhcpdctl-linux -platform linux/arm64 -docker
+    - dibs -pushBinary -target dhcpdctl-linux -platform linux/arm64
+  artifacts:
+    name: dhcpdctl-binaries-arm64
+    paths:
+      - .bin/binaries
+    expire_in: 1 month
+  only:
+    - tags
+
+# Build and push chart
+dhcpdd:buildAndPushChart:
+  <<: *dibsJob
+  stage: dhcpdd:buildAndPushChart
+  script:
+    - dibs -buildChart -target linux
+    - dibs -pushChart -target linux
+  artifacts:
+    name: dhcpdd-chart
+    paths:
+      - .bin/chart
+    expire_in: 1 month
+  only:
+    - tags
