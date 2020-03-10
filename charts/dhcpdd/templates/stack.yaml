@@ -25,6 +25,10 @@ spec:
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      {{ if .Values.resources.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.resources.nodeSelector }}
+      {{ end }}
       containers:
         - name: dhcpdd{{ if .Values.meta.dev }}-dev{{ end }}
           image: {{ .Values.meta.image }}

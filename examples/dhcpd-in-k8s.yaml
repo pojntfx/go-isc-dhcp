@@ -1,0 +1,13 @@
+# Run this on the k8s node you want to test dhcpdd on first (or use a physical network interface):
+# ip tuntap add tap0 mode tap
+# ip addr add dev tap0 10.0.0/24
+# ip link set tap0 up
+
+dhcpd:
+  device: tap0
+  subnets:
+    - netmask: 255.255.255.0
+      network: 10.0.0.0
+      range:
+        start: 10.0.0.1
+        end: 10.0.0.254
