@@ -48,3 +48,48 @@ profiles:
             setValueTemplates:
               meta.platform: "{{ .TARGETPLATFORM }}"
               meta.debug: "{{ .DIBS_DEBUG }}"
+  - name: dhclientd
+    build:
+      artifacts:
+        - image: pojntfx/dhclientd
+          context: .
+          docker:
+            dockerfile: Dockerfile.dhclientd
+            buildArgs:
+              DIBS_TARGET: dhclientd-linux
+      local:
+        useBuildkit: true
+    deploy:
+      helm:
+        releases:
+          - name: dhclientd
+            chartPath: charts/dhclientd
+            values:
+              meta.image: pojntfx/dhclientd
+  - name: dhclientd-dev
+    build:
+      artifacts:
+        - image: pojntfx/dhclientd-dev
+          context: .
+          docker:
+            dockerfile: Dockerfile.dev
+            buildArgs:
+              DIBS_TARGET: dhclientd-linux
+          sync:
+            infer:
+              - "**/*" # Re-deploy manually to apply k8s changes
+      local:
+        useBuildkit: true
+    deploy:
+      helm:
+        releases:
+          - name: dhclientd-dev
+            chartPath: charts/dhclientd
+            values:
+              meta.image: pojntfx/dhclientd-dev
+            setValues:
+              meta.dev: true
+              meta.target: dhclientd-linux
+            setValueTemplates:
+              meta.platform: "{{ .TARGETPLATFORM }}"
+              meta.debug: "{{ .DIBS_DEBUG }}"

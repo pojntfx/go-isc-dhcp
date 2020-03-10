@@ -10,7 +10,7 @@ import (
 
 	constants "github.com/pojntfx/go-isc-dhcp/cmd"
 	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
-	"github.com/pojntfx/go-isc-dhcp/pkg/svc"
+	"github.com/pojntfx/go-isc-dhcp/pkg/svc/dhcpd"
 	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -56,7 +56,7 @@ https://pojntfx.github.io/go-isc-dhcp/`,
 		server := grpc.NewServer()
 		reflection.Register(server)
 
-		DHCPDService := svc.DHCPDManager{
+		DHCPDService := dhcpd.DHCPDManager{
 			BinaryDir:     binaryDir,
 			StateDir:      filepath.Join(os.TempDir(), "go-isc-dhcp", "dhcpd"),
 			DHCPDsManaged: make(map[string]*workers.DHCPD),
