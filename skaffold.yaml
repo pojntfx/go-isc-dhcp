@@ -1,0 +1,50 @@
+apiVersion: skaffold/v1
+kind: Config
+metadata:
+  name: dhcpdd
+profiles:
+  - name: dhcpdd
+    build:
+      artifacts:
+        - image: pojntfx/dhcpdd
+          context: .
+          docker:
+            dockerfile: Dockerfile.dhcpdd
+            buildArgs:
+              DIBS_TARGET: dhcpdd-linux
+      local:
+        useBuildkit: true
+    deploy:
+      helm:
+        releases:
+          - name: dhcpdd
+            chartPath: charts/dhcpdd
+            values:
+              meta.image: pojntfx/dhcpdd
+  - name: dhcpdd-dev
+    build:
+      artifacts:
+        - image: pojntfx/dhcpdd-dev
+          context: .
+          docker:
+            dockerfile: Dockerfile.dev
+            buildArgs:
+              DIBS_TARGET: dhcpdd-linux
+          sync:
+            infer:
+              - "**/*" # Re-deploy manually to apply k8s changes
+      local:
+        useBuildkit: true
+    deploy:
+      helm:
+        releases:
+          - name: dhcpdd-dev
+            chartPath: charts/dhcpdd
+            values:
+              meta.image: pojntfx/dhcpdd-dev
+            setValues:
+              meta.dev: true
+              meta.target: dhcpdd-linux
+            setValueTemplates:
+              meta.platform: "{{ .TARGETPLATFORM }}"
+              meta.debug: "{{ .DIBS_DEBUG }}"

@@ -1,6 +1,13 @@
 package main
 
 import (
+	"net"
+	"os"
+	"os/signal"
+	"path/filepath"
+	"strings"
+	"syscall"
+
 	constants "github.com/pojntfx/go-isc-dhcp/cmd"
 	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
 	"github.com/pojntfx/go-isc-dhcp/pkg/svc"
@@ -11,12 +18,6 @@ import (
 	"gitlab.com/bloom42/libs/rz-go/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"net"
-	"os"
-	"os/signal"
-	"path/filepath"
-	"strings"
-	"syscall"
 )
 
 const (
