@@ -13,8 +13,6 @@ resources:
   maxReplicas: 10
 
 ingress:
-  loadBalancerPorts:
-    - 67
   nodePort: 31240
   domain: dhcpdd.felicitas.pojtinger.com
   path: /

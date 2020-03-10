@@ -23,6 +23,8 @@ spec:
       labels:
         app: dhcpdd-{{ .Release.Name }}{{ if .Values.meta.dev }}-dev{{ end }}
     spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: dhcpdd{{ if .Values.meta.dev }}-dev{{ end }}
           image: {{ .Values.meta.image }}
