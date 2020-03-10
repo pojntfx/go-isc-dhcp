@@ -2,6 +2,8 @@ package svc
 
 import (
 	"context"
+	"os"
+
 	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
 	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
 	"github.com/rakyll/statik/fs"
@@ -9,7 +11,6 @@ import (
 	"gitlab.com/bloom42/libs/rz-go/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"os"
 )
 
 // DHClientManager manages dhcp clients.
