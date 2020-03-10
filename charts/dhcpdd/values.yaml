@@ -8,6 +8,7 @@ meta:
   debug: "{{ .DIBS_DEBUG }}"
 
 resources:
+  nodeSelector: {}
   memory: "128Mi"
   cpu: "256m"
   maxReplicas: 10
