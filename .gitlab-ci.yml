@@ -244,7 +244,7 @@ dhcpdd:buildAndPushBinariesAMD64:
   artifacts:
     name: dhcpdd-binaries-amd64
     paths:
-      - .bin/binaries
+      - .bin/binaries/dhcpdd
     expire_in: 1 month
   only:
     - tags
@@ -257,7 +257,7 @@ dhcpdd:buildAndPushBinariesAMD64:
 #   artifacts:
 #     name: dhcpdd-binaries-arm64
 #     paths:
-#       - .bin/binaries
+#       - .bin/binaries/dhcpdd
 #     expire_in: 1 month
 #   only:
 #     - tags
@@ -271,7 +271,7 @@ dhcpdctl:buildAndPushBinariesAMD64:
   artifacts:
     name: dhcpdctl-binaries-amd64
     paths:
-      - .bin/binaries
+      - .bin/binaries/dhcpdctl
     expire_in: 1 month
   only:
     - tags
@@ -284,7 +284,7 @@ dhcpdctl:buildAndPushBinariesAMD64:
 #   artifacts:
 #     name: dhcpdctl-binaries-arm64
 #     paths:
-#       - .bin/binaries
+#       - .bin/binaries/dhcpdctl
 #     expire_in: 1 month
 #   only:
 #     - tags
@@ -298,7 +298,7 @@ dhclientd:buildAndPushBinariesAMD64:
   artifacts:
     name: dhclientd-binaries-amd64
     paths:
-      - .bin/binaries
+      - .bin/binaries/dhclientd
     expire_in: 1 month
   only:
     - tags
@@ -311,7 +311,7 @@ dhclientd:buildAndPushBinariesAMD64:
 #   artifacts:
 #     name: dhclientd-binaries-arm64
 #     paths:
-#       - .bin/binaries
+#       - .bin/binaries/dhclientd
 #     expire_in: 1 month
 #   only:
 #     - tags
@@ -325,7 +325,7 @@ dhclientctl:buildAndPushBinariesAMD64:
   artifacts:
     name: dhclientctl-binaries-amd64
     paths:
-      - .bin/binaries
+      - .bin/binaries/dhclientctl
     expire_in: 1 month
   only:
     - tags
@@ -338,7 +338,7 @@ dhclientctl:buildAndPushBinariesAMD64:
 #   artifacts:
 #     name: dhclientctl-binaries-arm64
 #     paths:
-#       - .bin/binaries
+#       - .bin/binaries/dhclientctl
 #     expire_in: 1 month
 #   only:
 #     - tags
@@ -376,7 +376,7 @@ dhcpdd:buildAndPushChart:
   artifacts:
     name: dhcpdd-chart
     paths:
-      - .bin/chart
+      - .bin/chart/dhcpdd
     expire_in: 1 month
   only:
     - tags
@@ -390,7 +390,7 @@ dhclientd:buildAndPushChart:
   artifacts:
     name: dhclientd-chart
     paths:
-      - .bin/chart
+      - .bin/chart/dhclientd
     expire_in: 1 month
   only:
     - tags
