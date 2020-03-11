@@ -96,7 +96,7 @@ There are two client CLIs, `dhcpdctl` and `dhclientctl`.
 
 #### `dhcpdctl`
 
-You may also set the flags by setting env variables in the format `DHCPD_[FLAG]` (i.e. `DHCPD_DHCPD_CONFIGFILE=examples/dhcpd.yaml`) or by using a [configuration file](examples/dhcpd.yaml).
+You may also set the flags by setting env variables in the format `DHCPD_[FLAG]` (i.e. `DHCPD_DHCPD_CONFIGFILE=examples/dhcpd.yaml`) or by using a [configuration file](examples/dhcpd.yaml). If you want to get started on Kubernetes, see [this configuration file](examples/dhcpd-on-k8s.yaml)
 
 ```bash
 % dhcpdctl --help

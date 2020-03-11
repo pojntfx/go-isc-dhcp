@@ -3,6 +3,8 @@ dhcpd:
   subnets:
     - netmask: 255.255.255.0
       network: 192.168.1.0
+      nextServer: 192.168.1.1 # Optional, for PXE boot
+      filename: undionly.kpxe # Optional, for PXE boot
       range:
         start: 192.168.1.10
         end: 192.168.1.100
