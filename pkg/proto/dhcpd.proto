@@ -18,7 +18,9 @@ message DHCPD {
 message Subnet {
   string Network = 1;
   string Netmask = 2;
-  Range Range = 3;
+  string NextServer = 3;
+  string Filename = 4;
+  Range Range = 5;
 }
 
 message Range {

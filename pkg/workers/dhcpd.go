@@ -2,11 +2,12 @@ package workers
 
 import (
 	"fmt"
-	"github.com/pojntfx/go-isc-dhcp/pkg/utils"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"syscall"
+
+	"github.com/pojntfx/go-isc-dhcp/pkg/utils"
 )
 
 // DHCPD is a dhcp server.
@@ -23,9 +24,11 @@ type DHCPD struct {
 
 // Subnet is a dhcp subnet.
 type Subnet struct {
-	Network string
-	Netmask string
-	Range   Range
+	Network    string
+	Netmask    string
+	NextServer string
+	Filename   string
+	Range      Range
 }
 
 // Range is a range in which IP address should be given out.
@@ -36,15 +39,21 @@ type Range struct {
 
 // Configure configures the dhcp server.
 func (d *DHCPD) Configure() error {
-	var configFileContent string
+	configFileContent := ""
 	for _, subnet := range d.Subnets {
-		header := fmt.Sprintf("subnet %s netmask %s {", subnet.Network, subnet.Netmask)
+		configFileContent += fmt.Sprintf("subnet %s netmask %s {\n", subnet.Network, subnet.Netmask)
 
-		ranges := fmt.Sprintf("range %s %s;", subnet.Range.Start, subnet.Range.End)
+		configFileContent += fmt.Sprintf("\trange %s %s;\n", subnet.Range.Start, subnet.Range.End)
 
-		footer := "}"
+		if subnet.NextServer != "" {
+			configFileContent += fmt.Sprintf("\tnext-server %s;\n", subnet.NextServer)
+		}
 
-		configFileContent += fmt.Sprintf("%s\n\t%s\n%s\n", header, ranges, footer)
+		if subnet.Filename != "" {
+			configFileContent += fmt.Sprintf("\tfilename \"%s\";\n", subnet.Filename)
+		}
+
+		configFileContent += "}\n"
 	}
 	if err := os.MkdirAll(d.StateDir, os.ModePerm); err != nil {
 		return err
