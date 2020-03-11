@@ -349,22 +349,30 @@ dhcpdd:chartTestsAMD64:
   stage: dhcpdd:chartIntegrationTest
   script:
     - dibs -chartTests -target dhcpdd-linux -platform linux/amd64 -docker
+  only:
+    - tags
 # dhcpdd:chartTestsARM64:
 #   <<: *dibsJob
 #   stage: dhcpdd:chartIntegrationTest
 #   script:
 #     - dibs -chartTests -target dhcpdd-linux -platform linux/arm64 -docker
+#   only:
+#     - tags
 
 dhclientd:chartTestsAMD64:
   <<: *dibsJob
   stage: dhclientd:chartIntegrationTest
   script:
     - dibs -chartTests -target dhclientd-linux -platform linux/amd64 -docker
+  only:
+    - tags
 # dhclientd:chartTestsARM64:
 #   <<: *dibsJob
 #   stage: dhclientd:chartIntegrationTest
 #   script:
 #     - dibs -chartTests -target dhclientd-linux -platform linux/arm64 -docker
+#   only:
+#     - tags
 
 # Build and push chart
 dhcpdd:buildAndPushChart:
