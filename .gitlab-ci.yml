@@ -48,6 +48,8 @@ stages:
   - dhclientd:buildAndPushManifestAndBinaries
   - dhcpdctl:buildAndPushBinaries
   - dhclientctl:buildAndPushBinaries
+  - dhcpdd:helmIntegrationTest
+  - dhclientd:helmIntegrationTest
   - dhcpdd:buildAndPushChart
   - dhclientd:buildAndPushChart
 
@@ -57,44 +59,44 @@ dhcpdd:unitTestAMD64:
   stage: dhcpdd:unitTest
   script:
     - dibs -unitTests -target dhcpdd-linux -platform linux/amd64 -docker
-dhcpdd:unitTestARM64:
-  <<: *dibsJob
-  stage: dhcpdd:unitTest
-  script:
-    - dibs -unitTests -target dhcpdd-linux -platform linux/arm64 -docker
+# dhcpdd:unitTestARM64:
+#   <<: *dibsJob
+#   stage: dhcpdd:unitTest
+#   script:
+#     - dibs -unitTests -target dhcpdd-linux -platform linux/arm64 -docker
 
 dhcpdctl:unitTestAMD64:
   <<: *dibsJob
   stage: dhcpdctl:unitTest
   script:
     - dibs -unitTests -target dhcpdctl-linux -platform linux/amd64 -docker
-dhcpdctl:unitTestARM64:
-  <<: *dibsJob
-  stage: dhcpdctl:unitTest
-  script:
-    - dibs -unitTests -target dhcpdctl-linux -platform linux/arm64 -docker
+# dhcpdctl:unitTestARM64:
+#   <<: *dibsJob
+#   stage: dhcpdctl:unitTest
+#   script:
+#     - dibs -unitTests -target dhcpdctl-linux -platform linux/arm64 -docker
 
 dhclientd:unitTestAMD64:
   <<: *dibsJob
   stage: dhclientd:unitTest
   script:
     - dibs -unitTests -target dhclientd-linux -platform linux/amd64 -docker
-dhclientd:unitTestARM64:
-  <<: *dibsJob
-  stage: dhclientd:unitTest
-  script:
-    - dibs -unitTests -target dhclientd-linux -platform linux/arm64 -docker
+# dhclientd:unitTestARM64:
+#   <<: *dibsJob
+#   stage: dhclientd:unitTest
+#   script:
+#     - dibs -unitTests -target dhclientd-linux -platform linux/arm64 -docker
 
 dhclientctl:unitTestAMD64:
   <<: *dibsJob
   stage: dhclientctl:unitTest
   script:
     - dibs -unitTests -target dhclientctl-linux -platform linux/amd64 -docker
-dhclientctl:unitTestARM64:
-  <<: *dibsJob
-  stage: dhclientctl:unitTest
-  script:
-    - dibs -unitTests -target dhclientctl-linux -platform linux/arm64 -docker
+# dhclientctl:unitTestARM64:
+#   <<: *dibsJob
+#   stage: dhclientctl:unitTest
+#   script:
+#     - dibs -unitTests -target dhclientctl-linux -platform linux/arm64 -docker
 
 # Integration tests
 dhcpdd:integrationTestAMD64:
@@ -102,22 +104,22 @@ dhcpdd:integrationTestAMD64:
   stage: dhcpdd:integrationTest
   script:
     - dibs -integrationTests -target dhcpdd-linux -platform linux/amd64 -docker
-dhcpdd:integrationTestARM64:
-  <<: *dibsJob
-  stage: dhcpdd:integrationTest
-  script:
-    - dibs -integrationTests -target dhcpdd-linux -platform linux/arm64 -docker
+# dhcpdd:integrationTestARM64:
+#   <<: *dibsJob
+#   stage: dhcpdd:integrationTest
+#   script:
+#     - dibs -integrationTests -target dhcpdd-linux -platform linux/arm64 -docker
 
 dhcpdctl:integrationTestAMD64:
   <<: *dibsJob
   stage: dhcpdctl:integrationTest
   script:
     - dibs -integrationTests -target dhcpdctl-linux -platform linux/amd64 -docker
-dhcpdctl:integrationTestARM64:
-  <<: *dibsJob
-  stage: dhcpdctl:integrationTest
-  script:
-    - dibs -integrationTests -target dhcpdctl-linux -platform linux/arm64 -docker
+# dhcpdctl:integrationTestARM64:
+#   <<: *dibsJob
+#   stage: dhcpdctl:integrationTest
+#   script:
+#     - dibs -integrationTests -target dhcpdctl-linux -platform linux/arm64 -docker
 
 # Image tests
 # amd64 is disabled for now due to a GitLab bug where it does not exit after being run
@@ -127,34 +129,34 @@ dhcpdctl:integrationTestARM64:
 #  script:
 #    - dibs -buildImage -target dhcpdd-linux -platform linux/amd64
 #    - dibs -imageTests -target dhcpdd-linux -platform linux/amd64
-dhcpdd:imageTestsARM64:
-  <<: *dibsJob
-  stage: dhcpdd:integrationTest
-  script:
-    - dibs -buildImage -target dhcpdd-linux -platform linux/arm64
-    - dibs -imageTests -target dhcpdd-linux -platform linux/arm64
+# dhcpdd:imageTestsARM64:
+#   <<: *dibsJob
+#   stage: dhcpdd:integrationTest
+#   script:
+#     - dibs -buildImage -target dhcpdd-linux -platform linux/arm64
+#     - dibs -imageTests -target dhcpdd-linux -platform linux/arm64
 
 dhclientd:integrationTestAMD64:
   <<: *dibsJob
   stage: dhclientd:integrationTest
   script:
     - dibs -integrationTests -target dhclientd-linux -platform linux/amd64 -docker
-dhclientd:integrationTestARM64:
-  <<: *dibsJob
-  stage: dhclientd:integrationTest
-  script:
-    - dibs -integrationTests -target dhclientd-linux -platform linux/arm64 -docker
+# dhclientd:integrationTestARM64:
+#   <<: *dibsJob
+#   stage: dhclientd:integrationTest
+#   script:
+#     - dibs -integrationTests -target dhclientd-linux -platform linux/arm64 -docker
 
 dhclientctl:integrationTestAMD64:
   <<: *dibsJob
   stage: dhclientctl:integrationTest
   script:
     - dibs -integrationTests -target dhclientctl-linux -platform linux/amd64 -docker
-dhclientctl:integrationTestARM64:
-  <<: *dibsJob
-  stage: dhclientctl:integrationTest
-  script:
-    - dibs -integrationTests -target dhclientctl-linux -platform linux/arm64 -docker
+# dhclientctl:integrationTestARM64:
+#   <<: *dibsJob
+#   stage: dhclientctl:integrationTest
+#   script:
+#     - dibs -integrationTests -target dhclientctl-linux -platform linux/arm64 -docker
 
 # Image tests
 # amd64 is disabled for now due to a GitLab bug where it does not exit after being run
@@ -164,43 +166,12 @@ dhclientctl:integrationTestARM64:
 #  script:
 #    - dibs -buildImage -target dhclientd-linux -platform linux/amd64
 #    - dibs -imageTests -target dhclientd-linux -platform linux/amd64
-dhclientd:imageTestsARM64:
-  <<: *dibsJob
-  stage: dhclientd:integrationTest
-  script:
-    - dibs -buildImage -target dhclientd-linux -platform linux/arm64
-    - dibs -imageTests -target dhclientd-linux -platform linux/arm64
-
-# Chart tests
-dhcpdd:chartTestsAMD64:
-  <<: *dibsJob
-  stage: dhcpdd:integrationTest
-  script:
-    - dibs -buildImage -target dhcpdd-linux -platform linux/amd64
-    - dibs -buildManifest -target dhcpdd-linux
-    - dibs -chartTests -target dhcpdd-linux -platform linux/amd64 -docker
-dhcpdd:chartTestsARM64:
-  <<: *dibsJob
-  stage: dhcpdd:integrationTest
-  script:
-    - dibs -buildImage -target dhcpdd-linux -platform linux/arm64
-    - dibs -buildManifest -target dhcpdd-linux
-    - dibs -chartTests -target dhcpdd-linux -platform linux/arm64 -docker
-
-dhclientd:chartTestsAMD64:
-  <<: *dibsJob
-  stage: dhclientd:integrationTest
-  script:
-    - dibs -buildImage -target dhclientd-linux -platform linux/amd64
-    - dibs -buildManifest -target dhclientd-linux
-    - dibs -chartTests -target dhclientd-linux -platform linux/amd64 -docker
-dhclientd:chartTestsARM64:
-  <<: *dibsJob
-  stage: dhclientd:integrationTest
-  script:
-    - dibs -buildImage -target dhclientd-linux -platform linux/arm64
-    - dibs -buildManifest -target dhclientd-linux
-    - dibs -chartTests -target dhclientd-linux -platform linux/arm64 -docker
+# dhclientd:imageTestsARM64:
+#   <<: *dibsJob
+#   stage: dhclientd:integrationTest
+#   script:
+#     - dibs -buildImage -target dhclientd-linux -platform linux/arm64
+#     - dibs -imageTests -target dhclientd-linux -platform linux/arm64
 
 # Build and push image
 dhcpdd:buildAndPushImageAMD64:
@@ -211,14 +182,14 @@ dhcpdd:buildAndPushImageAMD64:
     - dibs -pushImage -target dhcpdd-linux -platform linux/amd64
   only:
     - tags
-dhcpdd:buildAndPushImageARM64:
-  <<: *dibsJob
-  stage: dhcpdd:buildAndPushImage
-  script:
-    - dibs -buildImage -target dhcpdd-linux -platform linux/arm64
-    - dibs -pushImage -target dhcpdd-linux -platform linux/arm64
-  only:
-    - tags
+# dhcpdd:buildAndPushImageARM64:
+#   <<: *dibsJob
+#   stage: dhcpdd:buildAndPushImage
+#   script:
+#     - dibs -buildImage -target dhcpdd-linux -platform linux/arm64
+#     - dibs -pushImage -target dhcpdd-linux -platform linux/arm64
+#   only:
+#     - tags
 
 dhclientd:buildAndPushImageAMD64:
   <<: *dibsJob
@@ -228,14 +199,14 @@ dhclientd:buildAndPushImageAMD64:
     - dibs -pushImage -target dhclientd-linux -platform linux/amd64
   only:
     - tags
-dhclientd:buildAndPushImageARM64:
-  <<: *dibsJob
-  stage: dhclientd:buildAndPushImage
-  script:
-    - dibs -buildImage -target dhclientd-linux -platform linux/arm64
-    - dibs -pushImage -target dhclientd-linux -platform linux/arm64
-  only:
-    - tags
+# dhclientd:buildAndPushImageARM64:
+#   <<: *dibsJob
+#   stage: dhclientd:buildAndPushImage
+#   script:
+#     - dibs -buildImage -target dhclientd-linux -platform linux/arm64
+#     - dibs -pushImage -target dhclientd-linux -platform linux/arm64
+#   only:
+#     - tags
 
 # Build and push manifest
 dhcpdd:buildAndPushManifest:
@@ -270,19 +241,19 @@ dhcpdd:buildAndPushBinariesAMD64:
     expire_in: 1 month
   only:
     - tags
-dhcpdd:buildAndPushBinariesARM64:
-  <<: *dibsJob
-  stage: dhcpdd:buildAndPushManifestAndBinaries
-  script:
-    - dibs -build -target dhcpdd-linux -platform linux/arm64 -docker
-    - dibs -pushBinary -target dhcpdd-linux -platform linux/arm64
-  artifacts:
-    name: dhcpdd-binaries-arm64
-    paths:
-      - .bin/binaries
-    expire_in: 1 month
-  only:
-    - tags
+# dhcpdd:buildAndPushBinariesARM64:
+#   <<: *dibsJob
+#   stage: dhcpdd:buildAndPushManifestAndBinaries
+#   script:
+#     - dibs -build -target dhcpdd-linux -platform linux/arm64 -docker
+#     - dibs -pushBinary -target dhcpdd-linux -platform linux/arm64
+#   artifacts:
+#     name: dhcpdd-binaries-arm64
+#     paths:
+#       - .bin/binaries
+#     expire_in: 1 month
+#   only:
+#     - tags
 
 dhcpdctl:buildAndPushBinariesAMD64:
   <<: *dibsJob
@@ -297,19 +268,19 @@ dhcpdctl:buildAndPushBinariesAMD64:
     expire_in: 1 month
   only:
     - tags
-dhcpdctl:buildAndPushBinariesARM64:
-  <<: *dibsJob
-  stage: dhcpdctl:buildAndPushBinaries
-  script:
-    - dibs -build -target dhcpdctl-linux -platform linux/arm64 -docker
-    - dibs -pushBinary -target dhcpdctl-linux -platform linux/arm64
-  artifacts:
-    name: dhcpdctl-binaries-arm64
-    paths:
-      - .bin/binaries
-    expire_in: 1 month
-  only:
-    - tags
+# dhcpdctl:buildAndPushBinariesARM64:
+#   <<: *dibsJob
+#   stage: dhcpdctl:buildAndPushBinaries
+#   script:
+#     - dibs -build -target dhcpdctl-linux -platform linux/arm64 -docker
+#     - dibs -pushBinary -target dhcpdctl-linux -platform linux/arm64
+#   artifacts:
+#     name: dhcpdctl-binaries-arm64
+#     paths:
+#       - .bin/binaries
+#     expire_in: 1 month
+#   only:
+#     - tags
 
 dhclientd:buildAndPushBinariesAMD64:
   <<: *dibsJob
@@ -324,19 +295,19 @@ dhclientd:buildAndPushBinariesAMD64:
     expire_in: 1 month
   only:
     - tags
-dhclientd:buildAndPushBinariesARM64:
-  <<: *dibsJob
-  stage: dhclientd:buildAndPushManifestAndBinaries
-  script:
-    - dibs -build -target dhclientd-linux -platform linux/arm64 -docker
-    - dibs -pushBinary -target dhclientd-linux -platform linux/arm64
-  artifacts:
-    name: dhclientd-binaries-arm64
-    paths:
-      - .bin/binaries
-    expire_in: 1 month
-  only:
-    - tags
+# dhclientd:buildAndPushBinariesARM64:
+#   <<: *dibsJob
+#   stage: dhclientd:buildAndPushManifestAndBinaries
+#   script:
+#     - dibs -build -target dhclientd-linux -platform linux/arm64 -docker
+#     - dibs -pushBinary -target dhclientd-linux -platform linux/arm64
+#   artifacts:
+#     name: dhclientd-binaries-arm64
+#     paths:
+#       - .bin/binaries
+#     expire_in: 1 month
+#   only:
+#     - tags
 
 dhclientctl:buildAndPushBinariesAMD64:
   <<: *dibsJob
@@ -351,19 +322,42 @@ dhclientctl:buildAndPushBinariesAMD64:
     expire_in: 1 month
   only:
     - tags
-dhclientctl:buildAndPushBinariesARM64:
+# dhclientctl:buildAndPushBinariesARM64:
+#   <<: *dibsJob
+#   stage: dhclientctl:buildAndPushBinaries
+#   script:
+#     - dibs -build -target dhclientctl-linux -platform linux/arm64 -docker
+#     - dibs -pushBinary -target dhclientctl-linux -platform linux/arm64
+#   artifacts:
+#     name: dhclientctl-binaries-arm64
+#     paths:
+#       - .bin/binaries
+#     expire_in: 1 month
+#   only:
+#     - tags
+
+# Chart tests
+dhcpdd:chartTestsAMD64:
   <<: *dibsJob
-  stage: dhclientctl:buildAndPushBinaries
+  stage: dhcpdd:helmIntegrationTest
   script:
-    - dibs -build -target dhclientctl-linux -platform linux/arm64 -docker
-    - dibs -pushBinary -target dhclientctl-linux -platform linux/arm64
-  artifacts:
-    name: dhclientctl-binaries-arm64
-    paths:
-      - .bin/binaries
-    expire_in: 1 month
-  only:
-    - tags
+    - dibs -chartTests -target dhcpdd-linux -platform linux/amd64 -docker
+# dhcpdd:chartTestsARM64:
+#   <<: *dibsJob
+#   stage: dhcpdd:helmIntegrationTest
+#   script:
+#     - dibs -chartTests -target dhcpdd-linux -platform linux/arm64 -docker
+
+dhclientd:chartTestsAMD64:
+  <<: *dibsJob
+  stage: dhclientd:helmIntegrationTest
+  script:
+    - dibs -chartTests -target dhclientd-linux -platform linux/amd64 -docker
+# dhclientd:chartTestsARM64:
+#   <<: *dibsJob
+#   stage: dhclientd:helmIntegrationTest
+#   script:
+#     - dibs -chartTests -target dhclientd-linux -platform linux/arm64 -docker
 
 # Build and push chart
 dhcpdd:buildAndPushChart:
