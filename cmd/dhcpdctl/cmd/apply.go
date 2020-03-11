@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+
 	"github.com/ghodss/yaml"
 	constants "github.com/pojntfx/go-isc-dhcp/cmd"
 	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
@@ -74,6 +75,8 @@ func init() {
   {
     "netmask": "255.255.255.0",
     "network": "192.168.1.0",
+    "nextServer": "192.168.1.1",
+    "filename": "undionly.kpxe",
     "range": {
       "start": "192.168.1.10",
       "end": "192.168.1.100"
