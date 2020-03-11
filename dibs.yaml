@@ -2,7 +2,7 @@ targets:
   - name: dhcpdd-linux
     helm:
       src: charts/dhcpdd
-      dist: .bin/chart
+      dist: .bin/chart/dhcpdd
     dockerManifest: pojntfx/dhcpdd:latest
     platforms:
       - identifier: linux/amd64
@@ -10,23 +10,23 @@ targets:
           watch: .
           include: (.*)\.go
           assetInImage: /usr/local/bin/dhcpdd
-          assetOut: .bin/binaries/dhcpdd-linux-amd64
+          assetOut: .bin/binaries/dhcpdd/dhcpdd-linux-amd64
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdd-linux-amd64 cmd/dhcpdd/main.go
+          build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdd/dhcpdd-linux-amd64 cmd/dhcpdd/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhcpdd-linux-amd64 --help
+          integrationTests: .bin/binaries/dhcpdd/dhcpdd-linux-amd64 --help
           imageTests: docker run --platform linux/amd64 -e DIBS_TARGET=dhcpdd-linux -e TARGETPLATFORM=linux/amd64 pojntfx/dhcpdd:linux-amd64 /usr/local/bin/dhcpdd --help
           chartTests: helm install dhcpdd .bin/chart/dhcpdd-*.tgz && helm delete dhcpdd
           start: |
             if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
               pkill -9 dhcpdd || true
-              .bin/binaries/dhcpdd-linux-amd64 &
+              .bin/binaries/dhcpdd/dhcpdd-linux-amd64 &
               dlv attach $! --headless --listen=:31441 --api-version=2 --accept-multiclient || true
             else
-              .bin/binaries/dhcpdd-linux-amd64
+              .bin/binaries/dhcpdd/dhcpdd-linux-amd64
             fi
         docker:
           build:
@@ -50,23 +50,23 @@ targets:
           watch: .
           include: (.*)\.go
           assetInImage: /usr/local/bin/dhcpdd
-          assetOut: .bin/binaries/dhcpdd-linux-arm64
+          assetOut: .bin/binaries/dhcpdd/dhcpdd-linux-arm64
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdd-linux-arm64 cmd/dhcpdd/main.go
+          build: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdd/dhcpdd-linux-arm64 cmd/dhcpdd/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhcpdd-linux-arm64 --help
+          integrationTests: .bin/binaries/dhcpdd/dhcpdd-linux-arm64 --help
           imageTests: docker run --platform linux/arm64 -e DIBS_TARGET=dhcpdd-linux -e TARGETPLATFORM=linux/arm64 pojntfx/dhcpdd:linux-arm64 /usr/local/bin/dhcpdd --help
           chartTests: helm install dhcpdd .bin/chart/dhcpdd-*.tgz && helm delete dhcpdd
           start: |
             if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
               pkill -9 dhcpdd || true
-              .bin/binaries/dhcpdd-linux-arm64 &
+              .bin/binaries/dhcpdd/dhcpdd-linux-arm64 &
               dlv attach $! --headless --listen=:31441 --api-version=2 --accept-multiclient || true
             else
-              .bin/binaries/dhcpdd-linux-arm64
+              .bin/binaries/dhcpdd/dhcpdd-linux-arm64
             fi
         docker:
           build:
@@ -94,17 +94,17 @@ targets:
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdd-linux-amd64 cmd/dhcpdd/main.go
+          build: GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdd/dhcpdd-linux-amd64 cmd/dhcpdd/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhcpdd-darwin-amd64 --help
+          integrationTests: .bin/binaries/dhcpdd/dhcpdd-darwin-amd64 --help
           start: |
             if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
               pkill -9 dhcpdd || true
-              .bin/binaries/dhcpdd-darwin-amd64 &
+              .bin/binaries/dhcpdd/dhcpdd-darwin-amd64 &
               dlv attach $! --headless --listen=:31441 --api-version=2 --accept-multiclient || true
             else
-              .bin/binaries/dhcpdd-darwin-amd64
+              .bin/binaries/dhcpdd/dhcpdd-darwin-amd64
             fi
   - name: dhcpdctl-linux
     platforms:
@@ -113,14 +113,14 @@ targets:
           watch: .
           include: (.*)\.go
           assetInImage: /usr/local/bin/dhcpdctl
-          assetOut: .bin/binaries/dhcpdctl-linux-amd64
+          assetOut: .bin/binaries/dhcpdctl/dhcpdctl-linux-amd64
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdctl-linux-amd64 cmd/dhcpdctl/main.go
+          build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdctl/dhcpdctl-linux-amd64 cmd/dhcpdctl/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhcpdctl-linux-amd64 --help
-          start: .bin/binaries/dhcpdctl-linux-amd64 --help
+          integrationTests: .bin/binaries/dhcpdctl/dhcpdctl-linux-amd64 --help
+          start: .bin/binaries/dhcpdctl/dhcpdctl-linux-amd64 --help
         docker:
           build:
             file: Dockerfile.dhcpdctl
@@ -139,14 +139,14 @@ targets:
           watch: .
           include: (.*)\.go
           assetInImage: /usr/local/bin/dhcpdctl
-          assetOut: .bin/binaries/dhcpdctl-linux-arm64
+          assetOut: .bin/binaries/dhcpdctl/dhcpdctl-linux-arm64
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdctl-linux-arm64 cmd/dhcpdctl/main.go
+          build: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdctl/dhcpdctl-linux-arm64 cmd/dhcpdctl/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhcpdctl-linux-arm64 --help
-          start: .bin/binaries/dhcpdctl-linux-arm64 --help
+          integrationTests: .bin/binaries/dhcpdctl/dhcpdctl-linux-arm64 --help
+          start: .bin/binaries/dhcpdctl/dhcpdctl-linux-arm64 --help
         docker:
           build:
             file: Dockerfile.dhcpdctl
@@ -169,14 +169,14 @@ targets:
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdctl-darwin-amd64 cmd/dhcpdctl/main.go
+          build: GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhcpdctl/dhcpdctl-darwin-amd64 cmd/dhcpdctl/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhcpdctl-darwin-amd64 --help
-          start: .bin/binaries/dhcpdctl-darwin-amd64 --help
+          integrationTests: .bin/binaries/dhcpdctl/dhcpdctl-darwin-amd64 --help
+          start: .bin/binaries/dhcpdctl/dhcpdctl-darwin-amd64 --help
   - name: dhclientd-linux
     helm:
       src: charts/dhclientd
-      dist: .bin/chart
+      dist: .bin/chart/dhclientd
     dockerManifest: pojntfx/dhclientd:latest
     platforms:
       - identifier: linux/amd64
@@ -184,23 +184,23 @@ targets:
           watch: .
           include: (.*)\.go
           assetInImage: /usr/local/bin/dhclientd
-          assetOut: .bin/binaries/dhclientd-linux-amd64
+          assetOut: .bin/binaries/dhclientd/dhclientd-linux-amd64
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientd-linux-amd64 cmd/dhclientd/main.go
+          build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientd/dhclientd-linux-amd64 cmd/dhclientd/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhclientd-linux-amd64 --help
+          integrationTests: .bin/binaries/dhclientd/dhclientd-linux-amd64 --help
           imageTests: docker run --platform linux/amd64 -e DIBS_TARGET=dhclientd-linux -e TARGETPLATFORM=linux/amd64 pojntfx/dhclientd:linux-amd64 /usr/local/bin/dhclientd --help
           chartTests: helm install dhclientd .bin/chart/dhclientd-*.tgz && helm delete dhclientd
           start: |
             if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
               pkill -9 dhclientd || true
-              .bin/binaries/dhclientd-linux-amd64 &
+              .bin/binaries/dhclientd/dhclientd-linux-amd64 &
               dlv attach $! --headless --listen=:31441 --api-version=2 --accept-multiclient || true
             else
-              .bin/binaries/dhclientd-linux-amd64
+              .bin/binaries/dhclientd/dhclientd-linux-amd64
             fi
         docker:
           build:
@@ -224,23 +224,23 @@ targets:
           watch: .
           include: (.*)\.go
           assetInImage: /usr/local/bin/dhclientd
-          assetOut: .bin/binaries/dhclientd-linux-arm64
+          assetOut: .bin/binaries/dhclientd/dhclientd-linux-arm64
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientd-linux-arm64 cmd/dhclientd/main.go
+          build: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientd/dhclientd-linux-arm64 cmd/dhclientd/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhclientd-linux-arm64 --help
+          integrationTests: .bin/binaries/dhclientd/dhclientd-linux-arm64 --help
           imageTests: docker run --platform linux/arm64 -e DIBS_TARGET=dhclientd-linux -e TARGETPLATFORM=linux/arm64 pojntfx/dhclientd:linux-arm64 /usr/local/bin/dhclientd --help
           chartTests: helm install dhclientd .bin/chart/dhclientd-*.tgz && helm delete dhclientd
           start: |
             if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
               pkill -9 dhclientd || true
-              .bin/binaries/dhclientd-linux-arm64 &
+              .bin/binaries/dhclientd/dhclientd-linux-arm64 &
               dlv attach $! --headless --listen=:31441 --api-version=2 --accept-multiclient || true
             else
-              .bin/binaries/dhclientd-linux-arm64
+              .bin/binaries/dhclientd/dhclientd-linux-arm64
             fi
         docker:
           build:
@@ -268,17 +268,17 @@ targets:
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientd-linux-amd64 cmd/dhclientd/main.go
+          build: GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientd/dhclientd-linux-amd64 cmd/dhclientd/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhclientd-darwin-amd64 --help
+          integrationTests: .bin/binaries/dhclientd/dhclientd-darwin-amd64 --help
           start: |
             if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
               pkill -9 dhclientd || true
-              .bin/binaries/dhclientd-darwin-amd64 &
+              .bin/binaries/dhclientd/dhclientd-darwin-amd64 &
               dlv attach $! --headless --listen=:31441 --api-version=2 --accept-multiclient || true
             else
-              .bin/binaries/dhclientd-darwin-amd64
+              .bin/binaries/dhclientd/dhclientd-darwin-amd64
             fi
   - name: dhclientctl-linux
     platforms:
@@ -287,14 +287,14 @@ targets:
           watch: .
           include: (.*)\.go
           assetInImage: /usr/local/bin/dhclientctl
-          assetOut: .bin/binaries/dhclientctl-linux-amd64
+          assetOut: .bin/binaries/dhclientctl/dhclientctl-linux-amd64
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientctl-linux-amd64 cmd/dhclientctl/main.go
+          build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientctl/dhclientctl-linux-amd64 cmd/dhclientctl/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhclientctl-linux-amd64 --help
-          start: .bin/binaries/dhclientctl-linux-amd64 --help
+          integrationTests: .bin/binaries/dhclientctl/dhclientctl-linux-amd64 --help
+          start: .bin/binaries/dhclientctl/dhclientctl-linux-amd64 --help
         docker:
           build:
             file: Dockerfile.dhclientctl
@@ -313,14 +313,14 @@ targets:
           watch: .
           include: (.*)\.go
           assetInImage: /usr/local/bin/dhclientctl
-          assetOut: .bin/binaries/dhclientctl-linux-arm64
+          assetOut: .bin/binaries/dhclientctl/dhclientctl-linux-arm64
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientctl-linux-arm64 cmd/dhclientctl/main.go
+          build: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientctl/dhclientctl-linux-arm64 cmd/dhclientctl/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhclientctl-linux-arm64 --help
-          start: .bin/binaries/dhclientctl-linux-arm64 --help
+          integrationTests: .bin/binaries/dhclientctl/dhclientctl-linux-arm64 --help
+          start: .bin/binaries/dhclientctl/dhclientctl-linux-arm64 --help
         docker:
           build:
             file: Dockerfile.dhclientctl
@@ -343,7 +343,7 @@ targets:
           gitRepoRoot: .
         commands:
           generateSources: go generate ./...
-          build: GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientctl-darwin-amd64 cmd/dhclientctl/main.go
+          build: GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static"' -o .bin/binaries/dhclientctl/dhclientctl-darwin-amd64 cmd/dhclientctl/main.go
           unitTests: go test -v ./...
-          integrationTests: .bin/binaries/dhclientctl-darwin-amd64 --help
-          start: .bin/binaries/dhclientctl-darwin-amd64 --help
+          integrationTests: .bin/binaries/dhclientctl/dhclientctl-darwin-amd64 --help
+          start: .bin/binaries/dhclientctl/dhclientctl-darwin-amd64 --help
