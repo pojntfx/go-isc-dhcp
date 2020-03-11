@@ -18,7 +18,7 @@ targets:
           unitTests: go test -v ./...
           integrationTests: .bin/binaries/dhcpdd/dhcpdd-linux-amd64 --help
           imageTests: docker run --platform linux/amd64 -e DIBS_TARGET=dhcpdd-linux -e TARGETPLATFORM=linux/amd64 pojntfx/dhcpdd:linux-amd64 /usr/local/bin/dhcpdd --help
-          chartTests: helm install dhcpdd .bin/chart/dhcpdd-*.tgz && helm delete dhcpdd
+          chartTests: helm install dhcpdd .bin/chart/dhcpdd/dhcpdd-*.tgz && helm delete dhcpdd
           start: |
             if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
@@ -58,7 +58,7 @@ targets:
           unitTests: go test -v ./...
           integrationTests: .bin/binaries/dhcpdd/dhcpdd-linux-arm64 --help
           imageTests: docker run --platform linux/arm64 -e DIBS_TARGET=dhcpdd-linux -e TARGETPLATFORM=linux/arm64 pojntfx/dhcpdd:linux-arm64 /usr/local/bin/dhcpdd --help
-          chartTests: helm install dhcpdd .bin/chart/dhcpdd-*.tgz && helm delete dhcpdd
+          chartTests: helm install dhcpdd .bin/chart/dhcpdd/dhcpdd-*.tgz && helm delete dhcpdd
           start: |
             if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
@@ -192,7 +192,7 @@ targets:
           unitTests: go test -v ./...
           integrationTests: .bin/binaries/dhclientd/dhclientd-linux-amd64 --help
           imageTests: docker run --platform linux/amd64 -e DIBS_TARGET=dhclientd-linux -e TARGETPLATFORM=linux/amd64 pojntfx/dhclientd:linux-amd64 /usr/local/bin/dhclientd --help
-          chartTests: helm install dhclientd .bin/chart/dhclientd-*.tgz && helm delete dhclientd
+          chartTests: helm install dhclientd .bin/chart/dhclientd/dhclientd-*.tgz && helm delete dhclientd
           start: |
             if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
@@ -232,7 +232,7 @@ targets:
           unitTests: go test -v ./...
           integrationTests: .bin/binaries/dhclientd/dhclientd-linux-arm64 --help
           imageTests: docker run --platform linux/arm64 -e DIBS_TARGET=dhclientd-linux -e TARGETPLATFORM=linux/arm64 pojntfx/dhclientd:linux-arm64 /usr/local/bin/dhclientd --help
-          chartTests: helm install dhclientd .bin/chart/dhclientd-*.tgz && helm delete dhclientd
+          chartTests: helm install dhclientd .bin/chart/dhclientd/dhclientd-*.tgz && helm delete dhclientd
           start: |
             if [ "$DIBS_DEBUG" = "true" ]; then
               pkill -9 dlv || true
