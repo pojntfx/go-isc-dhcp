@@ -2,6 +2,8 @@
 
 Management daemons and CLIs for the ISC DHCP server and client.
 
+[![pipeline status](https://gitlab.com/pojntfx/go-isc-dhcp/badges/master/pipeline.svg)](https://gitlab.com/pojntfx/go-isc-dhcp/commits/master)
+
 ## Overview
 
 `go-isc-dhcp` is a collection of management daemons and CLIs for the ISC DHCP server and client. The ISC DHCP server and client are built of two main components:
@@ -20,7 +22,27 @@ In a similar way, `go-isc-dhcp` is built of multiple components. The components 
 
 ## Installation
 
-A Go package [is available](https://godoc.org/github.com/pojntfx/go-isc-dhcp). In order to use it, you have to `go generate` it first.
+### Prebuilt Binaries
+
+Prebuilt binaries are available on the [releases page](https://github.com/pojntfx/go-isc-dhcp/releases/latest).
+
+### Go Package
+
+A Go package [is available](https://pkg.go.dev/github.com/pojntfx/go-isc-dhcp).
+
+### Docker Image
+
+#### `dhcpdd`
+
+A Docker image is available on [Docker Hub](https://hub.docker.com/r/pojntfx/dhcpdd).
+
+#### `dhclientd`
+
+A Docker image is available on [Docker Hub](https://hub.docker.com/r/pojntfx/dhclientd).
+
+### Helm Chart
+
+Helm charts for `dhcpdd` and `dhclientd` are available in [@pojntfx's Helm chart repository](https://pojntfx.github.io/charts/).
 
 ## Usage
 
