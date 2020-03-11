@@ -34,22 +34,29 @@
     - docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
 
 stages:
+  # Unit tests
   - dhcpdd:unitTest
   - dhclientd:unitTest
   - dhcpdctl:unitTest
   - dhclientctl:unitTest
+  # Integration tests
   - dhcpdd:integrationTest
   - dhclientd:integrationTest
   - dhcpdctl:integrationTest
   - dhclientctl:integrationTest
+  # Build and push images
   - dhcpdd:buildAndPushImage
   - dhclientd:buildAndPushImage
+  # Build and push manifest and binaries
   - dhcpdd:buildAndPushManifestAndBinaries
   - dhclientd:buildAndPushManifestAndBinaries
+  # Build and push binaries
   - dhcpdctl:buildAndPushBinaries
   - dhclientctl:buildAndPushBinaries
-  - dhcpdd:helmIntegrationTest
-  - dhclientd:helmIntegrationTest
+  # Chart integration tests
+  - dhcpdd:chartIntegrationTest
+  - dhclientd:chartIntegrationTest
+  # Build and push charts
   - dhcpdd:buildAndPushChart
   - dhclientd:buildAndPushChart
 
@@ -339,23 +346,23 @@ dhclientctl:buildAndPushBinariesAMD64:
 # Chart tests
 dhcpdd:chartTestsAMD64:
   <<: *dibsJob
-  stage: dhcpdd:helmIntegrationTest
+  stage: dhcpdd:chartIntegrationTest
   script:
     - dibs -chartTests -target dhcpdd-linux -platform linux/amd64 -docker
 # dhcpdd:chartTestsARM64:
 #   <<: *dibsJob
-#   stage: dhcpdd:helmIntegrationTest
+#   stage: dhcpdd:chartIntegrationTest
 #   script:
 #     - dibs -chartTests -target dhcpdd-linux -platform linux/arm64 -docker
 
 dhclientd:chartTestsAMD64:
   <<: *dibsJob
-  stage: dhclientd:helmIntegrationTest
+  stage: dhclientd:chartIntegrationTest
   script:
     - dibs -chartTests -target dhclientd-linux -platform linux/amd64 -docker
 # dhclientd:chartTestsARM64:
 #   <<: *dibsJob
-#   stage: dhclientd:helmIntegrationTest
+#   stage: dhclientd:chartIntegrationTest
 #   script:
 #     - dibs -chartTests -target dhclientd-linux -platform linux/arm64 -docker
 
