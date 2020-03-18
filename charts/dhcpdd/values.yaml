@@ -14,6 +14,6 @@ resources:
   maxReplicas: 10
 
 ingress:
-  nodePort: 31240
-  domain: dhcpdd.felix.pojtinger.com
+  nodePort: 31020
+  domain: dhcpdd.example.com
   path: /

@@ -42,7 +42,7 @@ spec:
               cpu: {{ .Values.resources.cpu }}
           {{ end }}
           ports:
-            - containerPort: 1240
+            - containerPort: 1020
             {{ if and .Values.meta.dev .Values.meta.debug }}
             - containerPort: {{ .Values.meta.debugPort }}
             {{end}}
@@ -59,8 +59,8 @@ spec:
   type: NodePort
   ports:
     - name: grpc
-      port: 1240
-      targetPort: 1240
+      port: 1020
+      targetPort: 1020
       nodePort: {{ .Values.ingress.nodePort }}
     - name: debug
       port: {{ .Values.meta.debugNodePort }}
@@ -96,8 +96,8 @@ spec:
     app: dhcpdd-{{ .Release.Name }}
   ports:
     - name: grpc
-      port: 1240
-      targetPort: 1240
+      port: 1020
+      targetPort: 1020
 
 ---
 apiVersion: networking.k8s.io/v1beta1
