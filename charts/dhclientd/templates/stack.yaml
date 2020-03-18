@@ -42,7 +42,7 @@ spec:
               cpu: {{ .Values.resources.cpu }}
           {{ end }}
           ports:
-            - containerPort: 1241
+            - containerPort: 1030
             {{ if and .Values.meta.dev .Values.meta.debug }}
             - containerPort: {{ .Values.meta.debugPort }}
             {{end}}
@@ -59,8 +59,8 @@ spec:
   type: NodePort
   ports:
     - name: grpc
-      port: 1241
-      targetPort: 1241
+      port: 1030
+      targetPort: 1030
       nodePort: {{ .Values.ingress.nodePort }}
     - name: debug
       port: {{ .Values.meta.debugNodePort }}
@@ -96,8 +96,8 @@ spec:
     app: dhclientd-{{ .Release.Name }}
   ports:
     - name: grpc
-      port: 1241
-      targetPort: 1241
+      port: 1030
+      targetPort: 1030
 
 ---
 apiVersion: networking.k8s.io/v1beta1

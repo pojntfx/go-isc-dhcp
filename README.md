@@ -66,7 +66,7 @@ Usage:
 
 Flags:
   -f, --dhcpdd.configFile string       Configuration file to use.
-  -l, --dhcpdd.listenHostPort string   TCP listen host:port. (default "localhost:1240")
+  -l, --dhcpdd.listenHostPort string   TCP listen host:port. (default "localhost:1020")
   -h, --help                           help for dhcpdd
 ```
 
@@ -86,7 +86,7 @@ Usage:
 
 Flags:
   -f, --dhclientd.configFile string       Configuration file to use.
-  -l, --dhclientd.listenHostPort string   TCP listen host:port. (default "localhost:1241")
+  -l, --dhclientd.listenHostPort string   TCP listen host:port. (default "localhost:1030")
   -h, --help                              help for dhclientd
 ```
 
