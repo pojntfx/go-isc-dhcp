@@ -1,13 +1,12 @@
 # syntax=docker/dockerfile:experimental
 # Build container
-FROM --platform=$TARGETPLATFORM golang AS build
+FROM --platform=$TARGETPLATFORM golang:alpine AS build
 ARG DIBS_TARGET
 ARG TARGETPLATFORM
 
 WORKDIR /app
 
-RUN apt update
-RUN apt install -y protobuf-compiler gcc make git file
+RUN apk add -u curl protoc gcc make git perl musl-dev linux-headers file
 
 RUN curl -Lo /tmp/dibs https://github.com/pojntfx/dibs/releases/latest/download/dibs-linux-amd64
 RUN install /tmp/dibs /usr/local/bin
@@ -23,11 +22,13 @@ RUN dibs -generateSources
 RUN dibs -build
 
 # Run container
-FROM --platform=$TARGETPLATFORM golang
+FROM --platform=$TARGETPLATFORM golang:alpine
 ARG DIBS_TARGET
 ARG TARGETPLATFORM
 
 WORKDIR /app
+
+RUN apk add -u curl
 
 RUN curl -Lo /tmp/dibs https://github.com/pojntfx/dibs/releases/latest/download/dibs-linux-amd64
 RUN install /tmp/dibs /usr/local/bin
