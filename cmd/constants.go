@@ -1,8 +1,8 @@
 package cmd
 
 const (
-	DHCPDDHostPortDefault    = "localhost:1020"                  // DHCPDDHostPortDefault is the default Host:port of `dhcpdd`.
-	DHClientDHostPortDefault = "localhost:1030"                  // DHClientDHostPortDefault is the default Host:port of `dhclient`.
+	DHCPDDHostPortDefault    = ":1020"                           // DHCPDDHostPortDefault is the default Host:port of `dhcpdd`.
+	DHClientDHostPortDefault = ":1030"                           // DHClientDHostPortDefault is the default Host:port of `dhclient`.
 	HostPortDocs             = "Host:port of the server to use." // HostPortDocs is the documentation for the host:port flag.
 	ConfigurationFileDocs    = "Configuration file to use."      // ConfigurationFileDocs is the documentation for the configuration file flag.)
 )

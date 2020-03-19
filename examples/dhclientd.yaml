@@ -1,2 +1,2 @@
 dhclientd:
-  listenHostPort: localhost:1030
+  listenHostPort: :1030
