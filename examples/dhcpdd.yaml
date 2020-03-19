@@ -1,2 +1,2 @@
 dhcpdd:
-  listenHostPort: localhost:1020
+  listenHostPort: :1020
