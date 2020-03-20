@@ -5,7 +5,7 @@ ARG TARGETPLATFORM
 
 WORKDIR /app
 
-RUN apk add -u curl protoc gcc make git perl musl-dev linux-headers file
+RUN apk add -u curl protoc gcc make git perl musl-dev linux-headers file libgcc
 
 RUN curl -Lo /tmp/dibs https://github.com/pojntfx/dibs/releases/latest/download/dibs-linux-amd64
 RUN install /tmp/dibs /usr/local/bin

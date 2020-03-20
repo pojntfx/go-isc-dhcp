@@ -26,6 +26,8 @@ FROM --platform=$TARGETPLATFORM alpine
 ARG DIBS_TARGET
 ARG TARGETPLATFORM
 
+RUN apk add -u libgcc
+
 COPY --from=build /app/.bin/binaries/dhclientd/dhclientd* /usr/local/bin/dhclientd
 
 CMD /usr/local/bin/dhclientd
