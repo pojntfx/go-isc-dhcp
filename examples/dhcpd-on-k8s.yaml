@@ -10,6 +10,9 @@ dhcpd:
       network: 10.0.0.0
       nextServer: 10.0.0.1 # Optional, for PXE boot
       filename: undionly.kpxe # Optional, for PXE boot
+      routers: 192.168.178.1 # Optional
+      domainNameServers:
+        - 8.8.8.8 # Optional
       range:
         start: 10.0.0.10
         end: 10.0.0.100

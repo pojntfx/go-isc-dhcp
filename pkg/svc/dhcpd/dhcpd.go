@@ -55,10 +55,12 @@ func (m *DHCPDManager) Create(_ context.Context, args *goISCDHCP.DHCPD) (*goISCD
 	var subnetsForWorker []workers.Subnet
 	for _, subnet := range subnets {
 		subnetsForWorker = append(subnetsForWorker, workers.Subnet{
-			Network:    subnet.GetNetwork(),
-			Netmask:    subnet.GetNetmask(),
-			NextServer: subnet.GetNextServer(),
-			Filename:   subnet.GetFilename(),
+			Network:           subnet.GetNetwork(),
+			Netmask:           subnet.GetNetmask(),
+			NextServer:        subnet.GetNextServer(),
+			Filename:          subnet.GetFilename(),
+			Routers:           subnet.GetRouters(),
+			DomainNameServers: subnet.GetDomainNameServers(),
 			Range: workers.Range{
 				Start: subnet.GetRange().GetStart(),
 				End:   subnet.GetRange().GetEnd(),
