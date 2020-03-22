@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"syscall"
 
 	"github.com/pojntfx/go-isc-dhcp/pkg/utils"
@@ -24,11 +25,13 @@ type DHCPD struct {
 
 // Subnet is a dhcp subnet.
 type Subnet struct {
-	Network    string
-	Netmask    string
-	NextServer string
-	Filename   string
-	Range      Range
+	Network           string
+	Netmask           string
+	NextServer        string
+	Filename          string
+	Routers           string
+	DomainNameServers []string
+	Range             Range
 }
 
 // Range is a range in which IP address should be given out.
@@ -51,6 +54,16 @@ func (d *DHCPD) Configure() error {
 
 		if subnet.Filename != "" {
 			configFileContent += fmt.Sprintf("\tfilename \"%s\";\n", subnet.Filename)
+		}
+
+		if subnet.Routers != "" {
+			configFileContent += fmt.Sprintf("\toption routers %s;\n", subnet.Routers)
+		}
+
+		if len(subnet.DomainNameServers) > 0 {
+			domainNameServerLine := strings.Join(subnet.DomainNameServers, ",")
+
+			configFileContent += fmt.Sprintf("\toption domain-name-servers %s;\n", domainNameServerLine)
 		}
 
 		configFileContent += "}\n"

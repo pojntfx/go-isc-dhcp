@@ -76,7 +76,9 @@ func init() {
     "netmask": "255.255.255.0",
     "network": "192.168.1.0",
     "nextServer": "192.168.1.1",
-    "filename": "undionly.kpxe",
+	"filename": "undionly.kpxe",
+	"routers": "192.168.178.1",
+	"domainNameServers": ["8.8.8.8"],
     "range": {
       "start": "192.168.1.10",
       "end": "192.168.1.100"
