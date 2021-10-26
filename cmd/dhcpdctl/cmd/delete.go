@@ -3,14 +3,15 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"sync"
+
 	constants "github.com/pojntfx/go-isc-dhcp/cmd"
-	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
+	api "github.com/pojntfx/go-isc-dhcp/pkg/api/proto/v1"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gitlab.com/bloom42/libs/rz-go"
 	"gitlab.com/bloom42/libs/rz-go/log"
 	"google.golang.org/grpc"
-	"sync"
 )
 
 var deleteCmd = &cobra.Command{
@@ -25,7 +26,7 @@ var deleteCmd = &cobra.Command{
 		}
 		defer conn.Close()
 
-		client := goISCDHCP.NewDHCPDManagerClient(conn)
+		client := api.NewDHCPDManagerClient(conn)
 
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
@@ -36,7 +37,7 @@ var deleteCmd = &cobra.Command{
 			wg.Add(1)
 
 			go func(id string, wg *sync.WaitGroup) {
-				response, err := client.Delete(ctx, &goISCDHCP.DHCPDManagedId{
+				response, err := client.Delete(ctx, &api.DHCPDManagedId{
 					Id: id,
 				})
 				if err != nil {

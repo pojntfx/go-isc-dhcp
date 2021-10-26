@@ -3,10 +3,11 @@ package cmd
 import (
 	"context"
 	"fmt"
+
 	"github.com/ghodss/yaml"
 	"github.com/gosuri/uitable"
 	constants "github.com/pojntfx/go-isc-dhcp/cmd"
-	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
+	api "github.com/pojntfx/go-isc-dhcp/pkg/api/proto/v1"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gitlab.com/bloom42/libs/rz-go"
@@ -25,13 +26,13 @@ var getCmd = &cobra.Command{
 		}
 		defer conn.Close()
 
-		client := goISCDHCP.NewDHClientManagerClient(conn)
+		client := api.NewDHClientManagerClient(conn)
 
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
 		if len(args) < 1 {
-			response, err := client.List(ctx, &goISCDHCP.DHClientManagerListArgs{})
+			response, err := client.List(ctx, &api.DHClientManagerListArgs{})
 			if err != nil {
 				return err
 			}
@@ -52,7 +53,7 @@ var getCmd = &cobra.Command{
 			return nil
 		}
 
-		response, err := client.Get(ctx, &goISCDHCP.DHClientManagedId{
+		response, err := client.Get(ctx, &api.DHClientManagedId{
 			Id: args[0],
 		})
 		if err != nil {

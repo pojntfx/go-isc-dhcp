@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -e
+
+# Install native dependencies
+apt update
+apt install -y curl
+
+# Clients
+if [ "$1" = "clients" ]; then
+    # Install bagop
+    curl -L -o /tmp/bagop "https://github.com/pojntfx/bagop/releases/latest/download/bagop.linux-$(uname -m)"
+    install /tmp/bagop /usr/local/bin
+
+    # Install dependencies
+    apt update
+    apt install -y libssl-dev protobuf-compiler build-essential automake file
+
+    # Generate bindings
+    make depend
+
+    # Build
+    CGO_ENABLED=0 bagop -j "$(nproc)" -b dhclientctl -x '(android/*|ios/*|aix/ppc64|plan9/386|plan9/amd64|plan9/arm)' -p 'make build/dhclientctl DST=$DST' -d out
+    CGO_ENABLED=0 bagop -j "$(nproc)" -b dhcpdctl -x '(android/*|ios/*|aix/ppc64|plan9/386|plan9/amd64|plan9/arm)' -p 'make build/dhcpdctl DST=$DST' -d out
+
+    exit 0
+fi
+
+# Servers
+if [ "$1" = "servers" ]; then
+    # Install bagccgop
+    curl -L -o /tmp/bagccgop "https://github.com/pojntfx/bagccgop/releases/latest/download/bagccgop.linux-$(uname -m)"
+    install /tmp/bagccgop /usr/local/bin
+
+    # Build
+    GOFLAGS='-gccgoflags=-static' bagccgop -x '(linux/alpha|linux/mipsle)' -j1 -b dhclientd -r 'make depend' -s 'protobuf-compiler,build-essential,automake' -p 'chmod +w /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && sed -i "s/SO_SNDTIMEO/SO_RCVTIMEO/" /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && make build/dhclientd DST=$DST' -d out
+    GOFLAGS='-gccgoflags=-static' bagccgop -x '(linux/alpha|linux/mipsle)' -j1 -b dhcpdd -r 'make depend' -s 'protobuf-compiler,build-essential,automake' -p 'chmod +w /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && sed -i "s/SO_SNDTIMEO/SO_RCVTIMEO/" /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && make build/dhcpdd DST=$DST' -d out
+
+    exit 0
+fi
