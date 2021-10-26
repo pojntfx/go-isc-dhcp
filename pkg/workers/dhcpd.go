@@ -1,11 +1,12 @@
 package workers
 
-//go:generate sh -c "rm -rf dhcp && git clone https://gitlab.isc.org/isc-projects/dhcp.git && cd dhcp && ./configure $(echo $([ -v CC ] && echo --host=${CC})) && make"
+//go:generate bash -c "rm -rf dhcp && git clone --depth 1 https://gitlab.isc.org/isc-projects/dhcp.git && cd dhcp && ./configure $(echo $([ -v CC ] && echo --host=${CC})) && make"
 
 import (
 	_ "embed"
 	"fmt"
 	"os"
+
 	"os/exec"
 	"path/filepath"
 	"strings"

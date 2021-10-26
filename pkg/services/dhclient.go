@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"os"
+	"time"
 
 	api "github.com/pojntfx/go-isc-dhcp/pkg/api/proto/v1"
 	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
@@ -40,7 +41,9 @@ func (m *DHClientManager) Create(_ context.Context, args *api.DHClient) (*api.DH
 		// Keep the dhcp client running
 		for {
 			if !dhcpd.IsScheduledForDeletion() {
-				log.Info("Restarting dhcp client")
+				log.Info("dhcp client crashed, restarting in 1 second")
+
+				time.Sleep(time.Second)
 
 				if err := dhcpd.Start(); err != nil {
 					log.Error(err.Error())
