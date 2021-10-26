@@ -84,7 +84,7 @@ ID                                      DEVICE
 First, start the DHCP client management daemon:
 
 ```shell
-$ sudo dhclientd examples/dhclientd.yaml
+$ sudo dhclientd -f examples/dhclientd.yaml
 {"level":"info","timestamp":"2021-10-26T10:47:26Z","message":"Starting server"}
 ```
 
