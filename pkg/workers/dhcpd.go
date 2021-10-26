@@ -1,14 +1,23 @@
 package workers
 
+//go:generate bash -c "rm -rf dhcp && git clone --depth 1 https://gitlab.isc.org/isc-projects/dhcp.git && cd dhcp && ./configure $(echo $([ -v CC ] && echo --host=${CC})) && make"
+
 import (
+	_ "embed"
 	"fmt"
 	"os"
+
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"syscall"
 
 	"github.com/pojntfx/go-isc-dhcp/pkg/utils"
+)
+
+var (
+	//go:embed dhcp/server/dhcpd
+	EmbeddedDHCPD []byte
 )
 
 // DHCPD is a dhcp server.

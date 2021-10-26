@@ -9,8 +9,8 @@ import (
 	"syscall"
 
 	constants "github.com/pojntfx/go-isc-dhcp/cmd"
-	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
-	"github.com/pojntfx/go-isc-dhcp/pkg/svc/dhcpd"
+	api "github.com/pojntfx/go-isc-dhcp/pkg/api/proto/v1"
+	"github.com/pojntfx/go-isc-dhcp/pkg/services"
 	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -33,7 +33,7 @@ var rootCmd = &cobra.Command{
 	Long: `dhcpdd is the ISC DHCP server management daemon.
 
 Find more information at:
-https://pojntfx.github.io/go-isc-dhcp/`,
+https://github.com/pojntfx/go-isc-dhcp`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		viper.SetEnvPrefix("dhcpdd")
 		viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
@@ -56,13 +56,13 @@ https://pojntfx.github.io/go-isc-dhcp/`,
 		server := grpc.NewServer()
 		reflection.Register(server)
 
-		DHCPDService := dhcpd.DHCPDManager{
+		DHCPDService := services.DHCPDManager{
 			BinaryDir:     binaryDir,
 			StateDir:      filepath.Join(os.TempDir(), "go-isc-dhcp", "dhcpd"),
 			DHCPDsManaged: make(map[string]*workers.DHCPD),
 		}
 
-		goISCDHCP.RegisterDHCPDManagerServer(server, &DHCPDService)
+		api.RegisterDHCPDManagerServer(server, &DHCPDService)
 
 		interrupt := make(chan os.Signal, 2)
 		signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)

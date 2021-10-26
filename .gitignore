@@ -1,5 +1,2 @@
-**/.bin
-**/.idea
-**/charts/*/charts
-**/dhcp/
-**/statik*
+out
+pkg/workers/dhcp
