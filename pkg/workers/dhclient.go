@@ -1,10 +1,17 @@
 package workers
 
 import (
-	"github.com/pojntfx/go-isc-dhcp/pkg/utils"
+	_ "embed"
 	"os"
 	"os/exec"
 	"syscall"
+
+	"github.com/pojntfx/go-isc-dhcp/pkg/utils"
+)
+
+var (
+	//go:embed dhcp/client/dhclient
+	EmbeddedDHClient []byte
 )
 
 // DHClient is a dhcp client.

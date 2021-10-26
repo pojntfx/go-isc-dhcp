@@ -2,7 +2,9 @@
 
 Management daemons and CLIs for the ISC DHCP server and client.
 
-[![pipeline status](https://gitlab.com/pojntfx/go-isc-dhcp/badges/master/pipeline.svg)](https://gitlab.com/pojntfx/go-isc-dhcp/commits/master)
+[![hydrun CI](https://github.com/pojntfx/go-isc-dhcp/actions/workflows/hydrun.yaml/badge.svg)](https://github.com/pojntfx/go-isc-dhcp/actions/workflows/hydrun.yaml)
+[![Matrix](https://img.shields.io/matrix/go-isc-dhcp:matrix.org)](https://matrix.to/#/#go-isc-dhcp:matrix.org?via=matrix.org)
+[![Binary Downloads](https://img.shields.io/github/downloads/pojntfx/go-isc-dhcp/total?label=binary%20downloads)](https://github.com/pojntfx/go-isc-dhcp/releases)
 
 ## Overview
 
@@ -22,44 +24,105 @@ In a similar way, `go-isc-dhcp` is built of multiple components. The components 
 
 ## Installation
 
-### Prebuilt Binaries
+Static binaries are available on [GitHub releases](https://github.com/pojntfx/go-isc-dhcp/releases).
 
-Prebuilt binaries are available on the [releases page](https://github.com/pojntfx/go-isc-dhcp/releases/latest).
+On Linux, you can install them like so:
 
-### Go Package
+```shell
+$ curl -L -o /tmp/dhcpdd "https://github.com/pojntfx/go-isc-dhcp/releases/latest/download/dhcpdd.linux-$(uname -m)"
+$ curl -L -o /tmp/dhclientd "https://github.com/pojntfx/go-isc-dhcp/releases/latest/download/dhclientd.linux-$(uname -m)"
+$ curl -L -o /tmp/dhcpdctl "https://github.com/pojntfx/go-isc-dhcp/releases/latest/download/dhcpdctl.linux-$(uname -m)"
+$ curl -L -o /tmp/dhclientctl "https://github.com/pojntfx/go-isc-dhcp/releases/latest/download/dhclientctl.linux-$(uname -m)"
+$ sudo install /tmp/{dhcpdd,dhclientd,dhcpdctl,dhclientctl} /usr/local/bin
+```
 
-A Go package [is available](https://pkg.go.dev/github.com/pojntfx/go-isc-dhcp).
+On macOS, you can use the following (we can't cross-compile for macOS, so only the client CLIs work - if you want to build the daemons locally, see [contributing](#contributing)):
 
-### Docker Image
+```shell
+$ curl -L -o /tmp/dhcpdctl "https://github.com/pojntfx/go-isc-dhcp/releases/latest/download/dhcpdctl.linux-$(uname -m)"
+$ curl -L -o /tmp/dhclientctl "https://github.com/pojntfx/go-isc-dhcp/releases/latest/download/dhclientctl.linux-$(uname -m)"
+$ sudo install /tmp/{dhcpdctl,dhclientctl} /usr/local/bin
+```
 
-#### `dhcpdd`
+On Windows, the following should work (we can't cross-compile for Windows, so only the client CLIs work - if you want to build the daemons locally, see [contributing](#contributing)):
 
-A Docker image is available on [Docker Hub](https://hub.docker.com/r/pojntfx/dhcpdd).
+```shell
+PS> Invoke-WebRequest https://github.com/pojntfx/go-isc-dhcp/releases/latest/download/dhcpdctl.windows-x86_64.exe -OutFile \Windows\System32\dhcpdctl.exe
+PS> Invoke-WebRequest https://github.com/pojntfx/go-isc-dhcp/releases/latest/download/dhclientctl.windows-x86_64.exe -OutFile \Windows\System32\dhclientctl.exe
+```
 
-#### `dhclientd`
-
-A Docker image is available on [Docker Hub](https://hub.docker.com/r/pojntfx/dhclientd).
-
-### Helm Chart
-
-Helm charts for `dhcpdd` and `dhclientd` are available in [@pojntfx's Helm chart repository](https://pojntfx.github.io/charts/).
+You can find binaries for more operating systems and architectures on [GitHub releases](https://github.com/pojntfx/go-isc-dhcp/releases).
 
 ## Usage
 
+### 1. Setting up `dhcpd`
+
+First, start the DHCP server management daemon:
+
+```shell
+$ sudo dhcpdd -f examples/dhcpdd.yaml
+{"level":"info","timestamp":"2021-10-26T10:45:14Z","message":"Starting server"}
+```
+
+Now, in a new terminal, create a DHCP server (be sure to adjust the config file to your requirements first):
+
+```shell
+$ dhcpdctl apply -f examples/dhcpd.yaml
+dhcp server "c5c55356-d114-48f0-ab99-f1d54b46acb4" created
+```
+
+You can retrieve the running DHCP servers with `dhcpdctl get`:
+
+```shell
+$ dhcpdctl get
+ID                                      DEVICE
+887eb0b0-50f5-4609-aede-ea7304a40bbd    edge0
+```
+
+### 2. Setting up the `dhclient`
+
+First, start the DHCP client management daemon:
+
+```shell
+$ sudo dhclientd examples/dhclientd.yaml
+{"level":"info","timestamp":"2021-10-26T10:47:26Z","message":"Starting server"}
+```
+
+Now, in a new terminal, create the DHCP client (be sure to adjust the config file to your requirements first):
+
+```shell
+$ dhclientctl apply -f examples/dhclient.yaml
+dhcp client "769329ba-2be5-498a-9281-e6a4aa850973" created
+```
+
+You can retrieve the running DHCP clients with `edgectl get`:
+
+```shell
+$ dhclientctl get
+ID                                      DEVICE
+769329ba-2be5-498a-9281-e6a4aa850973    edge1
+```
+
+🚀 **That's it!** We've successfully created a DHCP server and client.
+
+Be sure to check out the [reference](#reference) for more information.
+
+## Reference
+
 ### Daemons
 
-There are two daemons, `dhcpdd` and `dhclientd`; both require root priviledges.
+There are two daemons, `dhcpdd` and `dhclientd`; both require root privileges.
 
 #### `dhcpdd`
 
 You may also set the flags by setting env variables in the format `DHCPDD_[FLAG]` (i.e. `DHCPDD_DHCPDD_CONFIGFILE=examples/dhcpdd.yaml`) or by using a [configuration file](examples/dhcpdd.yaml).
 
 ```bash
-% dhcpdd --help
+$ dhcpdd --help
 dhcpdd is the ISC DHCP server management daemon.
 
 Find more information at:
-https://pojntfx.github.io/go-isc-dhcp/
+https://github.com/pojntfx/go-isc-dhcp
 
 Usage:
   dhcpdd [flags]
@@ -75,11 +138,11 @@ Flags:
 You may also set the flags by setting env variables in the format `DHCLIENTD_[FLAG]` (i.e. `DHCLIENTD_DHCLIENTD_CONFIGFILE=examples/dhclientd.yaml`) or by using a [configuration file](examples/dhclientd.yaml).
 
 ```bash
-% dhclientd --help
+$ dhclientd --help
 dhclientd is the ISC DHCP client management daemon.
 
 Find more information at:
-https://pojntfx.github.io/go-isc-dhcp/
+https://github.com/pojntfx/go-isc-dhcp
 
 Usage:
   dhclientd [flags]
@@ -96,20 +159,21 @@ There are two client CLIs, `dhcpdctl` and `dhclientctl`.
 
 #### `dhcpdctl`
 
-You may also set the flags by setting env variables in the format `DHCPD_[FLAG]` (i.e. `DHCPD_DHCPD_CONFIGFILE=examples/dhcpd.yaml`) or by using a [configuration file](examples/dhcpd.yaml). If you want to get started on Kubernetes, see [this configuration file](examples/dhcpd-on-k8s.yaml)
+You may also set the flags by setting env variables in the format `DHCPD_[FLAG]` (i.e. `DHCPD_DHCPD_CONFIGFILE=examples/dhcpd.yaml`) or by using a [configuration file](examples/dhcpd.yaml).
 
 ```bash
-% dhcpdctl --help
+$ dhcpdctl --help
 dhcpdctl manages dhcpdd, the ISC DHCP server management daemon.
 
 Find more information at:
-https://pojntfx.github.io/go-isc-dhcp/
+https://github.com/pojntfx/go-isc-dhcp
 
 Usage:
   dhcpdctl [command]
 
 Available Commands:
   apply       Apply a dhcp server
+  completion  generate the autocompletion script for the specified shell
   delete      Delete one or more dhcp server(s)
   get         Get one or all dhcp server(s)
   help        Help about any command
@@ -125,17 +189,18 @@ Use "dhcpdctl [command] --help" for more information about a command.
 You may also set the flags by setting env variables in the format `DHCLIENT_[FLAG]` (i.e. `DHCLIENT_DHCLIENT_CONFIGFILE=examples/dhclient.yaml`) or by using a [configuration file](examples/dhclient.yaml).
 
 ```bash
-% dhclientctl --help
+$ dhclientctl --help
 dhclientctl manages dhclientd, the ISC DHCP client management daemon.
 
 Find more information at:
-https://pojntfx.github.io/go-isc-dhcp/
+https://github.com/pojntfx/go-isc-dhcp
 
 Usage:
   dhclientctl [command]
 
 Available Commands:
   apply       Apply a dhcp client
+  completion  generate the autocompletion script for the specified shell
   delete      Delete one or more dhcp client(s)
   get         Get one or all dhcp client(s)
   help        Help about any command
@@ -146,8 +211,28 @@ Flags:
 Use "dhclientctl [command] --help" for more information about a command.
 ```
 
+## Contributing
+
+To contribute, please use the [GitHub flow](https://guides.github.com/introduction/flow/) and follow our [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+To build go-isc-dhcp locally, run:
+
+```shell
+$ git clone https://github.com/pojntfx/go-isc-dhcp.git
+$ cd go-isc-dhcp
+$ make depend
+$ make
+$ sudo make run/dhclientd # Or run/dhcpdd etc.
+```
+
+Have any questions or need help? Chat with us [on Matrix](https://matrix.to/#/#go-isc-dhcp:matrix.org?via=matrix.org)!
+
 ## License
 
-go-isc-dhcp (c) 2020 Felicitas Pojtinger
+go-isc-dhcp (c) 2021 Felicitas Pojtinger and contributors
 
 SPDX-License-Identifier: AGPL-3.0
+
+```
+
+```

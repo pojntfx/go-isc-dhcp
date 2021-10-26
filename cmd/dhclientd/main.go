@@ -9,8 +9,8 @@ import (
 	"syscall"
 
 	constants "github.com/pojntfx/go-isc-dhcp/cmd"
-	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
-	"github.com/pojntfx/go-isc-dhcp/pkg/svc/dhclient"
+	api "github.com/pojntfx/go-isc-dhcp/pkg/api/proto/v1"
+	"github.com/pojntfx/go-isc-dhcp/pkg/services"
 	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -33,7 +33,7 @@ var rootCmd = &cobra.Command{
 	Long: `dhclientd is the ISC DHCP client management daemon.
 
 Find more information at:
-https://pojntfx.github.io/go-isc-dhcp/`,
+https://github.com/pojntfx/go-isc-dhcp`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		viper.SetEnvPrefix("dhclientd")
 		viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
@@ -56,12 +56,12 @@ https://pojntfx.github.io/go-isc-dhcp/`,
 		server := grpc.NewServer()
 		reflection.Register(server)
 
-		DHClientService := dhclient.DHClientManager{
+		DHClientService := services.DHClientManager{
 			BinaryDir:        binaryDir,
 			DHClientsManaged: make(map[string]*workers.DHClient),
 		}
 
-		goISCDHCP.RegisterDHClientManagerServer(server, &DHClientService)
+		api.RegisterDHClientManagerServer(server, &DHClientService)
 
 		interrupt := make(chan os.Signal, 2)
 		signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)

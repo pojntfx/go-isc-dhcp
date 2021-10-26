@@ -1,13 +1,12 @@
-package dhclient
+package services
 
 import (
 	"context"
 	"os"
+	"time"
 
-	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
-	_ "github.com/pojntfx/go-isc-dhcp/pkg/svc/statikDhclient" // Embedded ISC DHCP client binary
+	api "github.com/pojntfx/go-isc-dhcp/pkg/api/proto/v1"
 	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
-	"github.com/rakyll/statik/fs"
 	uuid "github.com/satori/go.uuid"
 	"gitlab.com/bloom42/libs/rz-go/log"
 	"google.golang.org/grpc/codes"
@@ -16,13 +15,13 @@ import (
 
 // DHClientManager manages dhcp clients.
 type DHClientManager struct {
-	goISCDHCP.UnimplementedDHClientManagerServer
+	api.UnimplementedDHClientManagerServer
 	BinaryDir        string
 	DHClientsManaged map[string]*workers.DHClient
 }
 
 // Create creates a dhcp client.
-func (m *DHClientManager) Create(_ context.Context, args *goISCDHCP.DHClient) (*goISCDHCP.DHClientManagedId, error) {
+func (m *DHClientManager) Create(_ context.Context, args *api.DHClient) (*api.DHClientManagedId, error) {
 	id := uuid.NewV4().String()
 
 	dhcpd := workers.DHClient{
@@ -42,7 +41,9 @@ func (m *DHClientManager) Create(_ context.Context, args *goISCDHCP.DHClient) (*
 		// Keep the dhcp client running
 		for {
 			if !dhcpd.IsScheduledForDeletion() {
-				log.Info("Restarting dhcp client")
+				log.Info("dhcp client crashed, restarting in 1 second")
+
+				time.Sleep(time.Second)
 
 				if err := dhcpd.Start(); err != nil {
 					log.Error(err.Error())
@@ -57,37 +58,37 @@ func (m *DHClientManager) Create(_ context.Context, args *goISCDHCP.DHClient) (*
 
 	m.DHClientsManaged[id] = &dhcpd
 
-	return &goISCDHCP.DHClientManagedId{
+	return &api.DHClientManagedId{
 		Id: id,
 	}, nil
 }
 
 // List lists the managed dhcp clients.
-func (m *DHClientManager) List(_ context.Context, args *goISCDHCP.DHClientManagerListArgs) (*goISCDHCP.DHClientManagerListReply, error) {
+func (m *DHClientManager) List(_ context.Context, args *api.DHClientManagerListArgs) (*api.DHClientManagerListReply, error) {
 	log.Info("Listing dhcp clients")
 
-	var DHClients []*goISCDHCP.DHClientManaged
+	var DHClients []*api.DHClientManaged
 	for id, DHClient := range m.DHClientsManaged {
-		DHClients = append(DHClients, &goISCDHCP.DHClientManaged{
+		DHClients = append(DHClients, &api.DHClientManaged{
 			Id:     id,
 			Device: DHClient.Device,
 		})
 	}
 
-	return &goISCDHCP.DHClientManagerListReply{
+	return &api.DHClientManagerListReply{
 		DHClientsManaged: DHClients,
 	}, nil
 }
 
 // Get gets one of the managed dhcp clients.
-func (m *DHClientManager) Get(_ context.Context, args *goISCDHCP.DHClientManagedId) (*goISCDHCP.DHClientManaged, error) {
+func (m *DHClientManager) Get(_ context.Context, args *api.DHClientManagedId) (*api.DHClientManaged, error) {
 	log.Info("Getting dhcp client")
 
-	var DHClientManaged *goISCDHCP.DHClientManaged
+	var DHClientManaged *api.DHClientManaged
 
 	for id, DHClient := range m.DHClientsManaged {
 		if id == args.GetId() {
-			DHClientManaged = &goISCDHCP.DHClientManaged{
+			DHClientManaged = &api.DHClientManaged{
 				Id:     id,
 				Device: DHClient.Device,
 			}
@@ -107,7 +108,7 @@ func (m *DHClientManager) Get(_ context.Context, args *goISCDHCP.DHClientManaged
 }
 
 // Delete deletes a dhcp client.
-func (m *DHClientManager) Delete(_ context.Context, args *goISCDHCP.DHClientManagedId) (*goISCDHCP.DHClientManagedId, error) {
+func (m *DHClientManager) Delete(_ context.Context, args *api.DHClientManagedId) (*api.DHClientManagedId, error) {
 	id := args.GetId()
 
 	DHClient := m.DHClientsManaged[id]
@@ -137,29 +138,19 @@ func (m *DHClientManager) Delete(_ context.Context, args *goISCDHCP.DHClientMana
 
 	delete(m.DHClientsManaged, id)
 
-	return &goISCDHCP.DHClientManagedId{
+	return &api.DHClientManagedId{
 		Id: id,
 	}, nil
 }
 
 // Extract extracts the ISC DHCP client binary.
 func (m *DHClientManager) Extract() error {
-	statikFS, err := fs.New()
-	if err != nil {
-		return err
-	}
-
-	data, err := fs.ReadFile(statikFS, "/dhclient")
-	if err != nil {
-		return err
-	}
-
 	binaryFile, err := os.Create(m.BinaryDir)
 	if err != nil {
 		return err
 	}
 
-	if _, err = binaryFile.Write(data); err != nil {
+	if _, err = binaryFile.Write(workers.EmbeddedDHClient); err != nil {
 		return err
 	}
 	defer binaryFile.Close()

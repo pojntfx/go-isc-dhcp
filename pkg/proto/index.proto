@@ -1,6 +1,0 @@
-syntax = "proto3";
-
-package goISCDHCP;
-
-import public "dhclient.proto";
-import public "dhcpd.proto";

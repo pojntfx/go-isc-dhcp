@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package goISCDHCP;
+package com.pojtinger.felicitas.goISCDHCP;
+
+option go_package = "github.com/pojntfx/go-isc-dhcp/pkg/api/proto/v1";
 
 // DHCPDManager manages dhcp servers.
 service DHCPDManager {
