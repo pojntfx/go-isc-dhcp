@@ -14,7 +14,7 @@ if [ "$1" = "clients" ]; then
 
     # Install dependencies
     apt update
-    apt install -y libssl-dev protobuf-compiler build-essential automake file
+    apt install -y zlib1g-dev protobuf-compiler build-essential automake file
 
     # Generate bindings
     make depend
@@ -33,8 +33,8 @@ if [ "$1" = "servers" ]; then
     install /tmp/bagccgop /usr/local/bin
 
     # Build
-    GOFLAGS='-gccgoflags=-static' bagccgop -x '(linux/alpha|linux/mipsle)' -j1 -b dhclientd -r 'make depend' -s 'protobuf-compiler,build-essential,automake' -p 'chmod +w /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && sed -i "s/SO_SNDTIMEO/SO_RCVTIMEO/" /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && make build/dhclientd DST=$DST' -d out
-    GOFLAGS='-gccgoflags=-static' bagccgop -x '(linux/alpha|linux/mipsle)' -j1 -b dhcpdd -r 'make depend' -s 'protobuf-compiler,build-essential,automake' -p 'chmod +w /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && sed -i "s/SO_SNDTIMEO/SO_RCVTIMEO/" /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && make build/dhcpdd DST=$DST' -d out
+    GOFLAGS='-gccgoflags=-static' bagccgop -x '(linux/alpha|linux/mipsle|linux/ppc$|linux/riscv64|linux/arm$)' -j1 -b dhclientd -r 'make depend' -s 'protobuf-compiler,build-essential,automake,file' -m 'zlib1g-dev' -p 'chmod +w /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && sed -i "s/SO_SNDTIMEO/SO_RCVTIMEO/" /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && make build/dhclientd DST=$DST' -d out
+    GOFLAGS='-gccgoflags=-static' bagccgop -x '(linux/alpha|linux/mipsle|linux/ppc$|linux/riscv64|linux/arm$)' -j1 -b dhcpdd -r 'make depend' -s 'protobuf-compiler,build-essential,automake,file' -m 'zlib1g-dev' -p 'chmod +w /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && sed -i "s/SO_SNDTIMEO/SO_RCVTIMEO/" /root/go/pkg/mod/google.golang.org/grpc@*/internal/channelz/types_linux.go && make build/dhcpdd DST=$DST' -d out
 
     exit 0
 fi
