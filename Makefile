@@ -5,7 +5,7 @@ OUTPUT_DIR ?= out
 DST ?=
 
 # Private variables
-obj = $(shell ls cmd | sed 's@cmd/@@g')
+obj = dhcpdd dhclientd dhcpdctl dhclientctl
 all: $(addprefix build/,$(obj))
 
 # Build
