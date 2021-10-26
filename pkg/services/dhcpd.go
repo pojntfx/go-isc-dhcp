@@ -1,14 +1,14 @@
-package dhcpd
+package services
+
+//go:generate sh -c "mkdir -p ../api/proto/v1 && protoc --go_out=paths=source_relative,plugins=grpc:../api/proto/v1 -I=../../api/proto/v1 ../../api/proto/v1/*.proto"
 
 import (
 	"context"
 	"os"
 	"path/filepath"
 
-	goISCDHCP "github.com/pojntfx/go-isc-dhcp/pkg/proto/generated"
-	_ "github.com/pojntfx/go-isc-dhcp/pkg/svc/statikDhcpd" // Embedded ISC DHCP server binary
+	api "github.com/pojntfx/go-isc-dhcp/pkg/api/proto/v1"
 	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
-	"github.com/rakyll/statik/fs"
 	uuid "github.com/satori/go.uuid"
 	"gitlab.com/bloom42/libs/rz-go/log"
 	"google.golang.org/grpc/codes"
@@ -17,21 +17,21 @@ import (
 
 // DHCPDManager manages dhcp servers.
 type DHCPDManager struct {
-	goISCDHCP.UnimplementedDHCPDManagerServer
+	api.UnimplementedDHCPDManagerServer
 	BinaryDir     string
 	StateDir      string
 	DHCPDsManaged map[string]*workers.DHCPD
 }
 
-func (m *DHCPDManager) getReplyDHCPDManagerFromDHCPDManaged(id string, DHCPD *workers.DHCPD) *goISCDHCP.DHCPDManaged {
-	var subnetsForReply []*goISCDHCP.Subnet
+func (m *DHCPDManager) getReplyDHCPDManagerFromDHCPDManaged(id string, DHCPD *workers.DHCPD) *api.DHCPDManaged {
+	var subnetsForReply []*api.Subnet
 	for _, subnet := range DHCPD.Subnets {
-		subnetForReply := &goISCDHCP.Subnet{
+		subnetForReply := &api.Subnet{
 			Network:    subnet.Network,
 			Netmask:    subnet.Netmask,
 			NextServer: subnet.NextServer,
 			Filename:   subnet.Filename,
-			Range: &goISCDHCP.Range{
+			Range: &api.Range{
 				Start: subnet.Range.Start,
 				End:   subnet.Range.End,
 			},
@@ -40,7 +40,7 @@ func (m *DHCPDManager) getReplyDHCPDManagerFromDHCPDManaged(id string, DHCPD *wo
 		subnetsForReply = append(subnetsForReply, subnetForReply)
 	}
 
-	return &goISCDHCP.DHCPDManaged{
+	return &api.DHCPDManaged{
 		Id:      id,
 		Device:  DHCPD.Device,
 		Subnets: subnetsForReply,
@@ -48,7 +48,7 @@ func (m *DHCPDManager) getReplyDHCPDManagerFromDHCPDManaged(id string, DHCPD *wo
 }
 
 // Create creates a dhcp server.
-func (m *DHCPDManager) Create(_ context.Context, args *goISCDHCP.DHCPD) (*goISCDHCP.DHCPDManagedId, error) {
+func (m *DHCPDManager) Create(_ context.Context, args *api.DHCPD) (*api.DHCPDManagedId, error) {
 	id := uuid.NewV4().String()
 
 	subnets := args.GetSubnets()
@@ -109,30 +109,30 @@ func (m *DHCPDManager) Create(_ context.Context, args *goISCDHCP.DHCPD) (*goISCD
 
 	m.DHCPDsManaged[id] = &dhcpd
 
-	return &goISCDHCP.DHCPDManagedId{
+	return &api.DHCPDManagedId{
 		Id: id,
 	}, nil
 }
 
 // List lists the managed dhcp servers.
-func (m *DHCPDManager) List(_ context.Context, args *goISCDHCP.DHCPDManagerListArgs) (*goISCDHCP.DHCPDManagerListReply, error) {
+func (m *DHCPDManager) List(_ context.Context, args *api.DHCPDManagerListArgs) (*api.DHCPDManagerListReply, error) {
 	log.Info("Listing dhcp servers")
 
-	var DHCPDsManaged []*goISCDHCP.DHCPDManaged
+	var DHCPDsManaged []*api.DHCPDManaged
 	for id, DHCPD := range m.DHCPDsManaged {
 		DHCPDsManaged = append(DHCPDsManaged, m.getReplyDHCPDManagerFromDHCPDManaged(id, DHCPD))
 	}
 
-	return &goISCDHCP.DHCPDManagerListReply{
+	return &api.DHCPDManagerListReply{
 		DHCPDsManaged: DHCPDsManaged,
 	}, nil
 }
 
 // Get gets one of the managed dhcp servers.
-func (m *DHCPDManager) Get(_ context.Context, args *goISCDHCP.DHCPDManagedId) (*goISCDHCP.DHCPDManaged, error) {
+func (m *DHCPDManager) Get(_ context.Context, args *api.DHCPDManagedId) (*api.DHCPDManaged, error) {
 	log.Info("Getting dhcp server")
 
-	var DHCPDManaged *goISCDHCP.DHCPDManaged
+	var DHCPDManaged *api.DHCPDManaged
 
 	for id, DHCPD := range m.DHCPDsManaged {
 		if id == args.GetId() {
@@ -153,7 +153,7 @@ func (m *DHCPDManager) Get(_ context.Context, args *goISCDHCP.DHCPDManagedId) (*
 }
 
 // Delete deletes a dhcp server.
-func (m *DHCPDManager) Delete(_ context.Context, args *goISCDHCP.DHCPDManagedId) (*goISCDHCP.DHCPDManagedId, error) {
+func (m *DHCPDManager) Delete(_ context.Context, args *api.DHCPDManagedId) (*api.DHCPDManagedId, error) {
 	id := args.GetId()
 
 	DHCPD := m.DHCPDsManaged[id]
@@ -184,29 +184,19 @@ func (m *DHCPDManager) Delete(_ context.Context, args *goISCDHCP.DHCPDManagedId)
 
 	delete(m.DHCPDsManaged, id)
 
-	return &goISCDHCP.DHCPDManagedId{
+	return &api.DHCPDManagedId{
 		Id: id,
 	}, nil
 }
 
 // Extract extracts the ISC DHCP server binary.
 func (m *DHCPDManager) Extract() error {
-	statikFS, err := fs.New()
-	if err != nil {
-		return err
-	}
-
-	data, err := fs.ReadFile(statikFS, "/dhcpd")
-	if err != nil {
-		return err
-	}
-
 	binaryFile, err := os.Create(m.BinaryDir)
 	if err != nil {
 		return err
 	}
 
-	if _, err = binaryFile.Write(data); err != nil {
+	if _, err = binaryFile.Write(workers.EmbeddedDHCPD); err != nil {
 		return err
 	}
 	defer binaryFile.Close()
