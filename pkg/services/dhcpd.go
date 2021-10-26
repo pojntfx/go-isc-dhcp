@@ -1,11 +1,12 @@
 package services
 
-//go:generate sh -c "mkdir -p ../api/proto/v1 && protoc --go_out=paths=source_relative,plugins=grpc:../api/proto/v1 -I=../../api/proto/v1 ../../api/proto/v1/*.proto"
+//go:generate bash -c "mkdir -p ../api/proto/v1 && protoc --go_out=paths=source_relative,plugins=grpc:../api/proto/v1 -I=../../api/proto/v1 ../../api/proto/v1/*.proto"
 
 import (
 	"context"
 	"os"
 	"path/filepath"
+	"time"
 
 	api "github.com/pojntfx/go-isc-dhcp/pkg/api/proto/v1"
 	"github.com/pojntfx/go-isc-dhcp/pkg/workers"
@@ -94,7 +95,9 @@ func (m *DHCPDManager) Create(_ context.Context, args *api.DHCPD) (*api.DHCPDMan
 		// Keep the dhcp server running
 		for {
 			if !dhcpd.IsScheduledForDeletion() {
-				log.Info("Restarting dhcp server")
+				log.Info("dhcp server crashed, restarting in 1 second")
+
+				time.Sleep(time.Second)
 
 				if err := dhcpd.Start(); err != nil {
 					log.Error(err.Error())
