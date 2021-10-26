@@ -232,7 +232,3 @@ Have any questions or need help? Chat with us [on Matrix](https://matrix.to/#/#g
 go-isc-dhcp (c) 2021 Felix Pojtinger and contributors
 
 SPDX-License-Identifier: AGPL-3.0
-
-```
-
-```
